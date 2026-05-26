@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MyRACIT/MyRACIT.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MyRACIT.Tests/MyRACIT.Tests.csproj" />
+  </Folder>
+</Solution>
