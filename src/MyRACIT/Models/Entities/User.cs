@@ -6,7 +6,8 @@ namespace MyRACIT.Models.Entities
     {
         [Key]
         public int Id { get; set; }
-
+        [Required]
+        public string PasswordHash { get; set; } = string.Empty;
         [Required(ErrorMessage = "ПІБ є обов'язковим!")]
         [MaxLength(200)]
         public string Name { get; set; } = string.Empty;
