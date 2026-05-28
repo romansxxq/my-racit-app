@@ -1,0 +1,126 @@
+@model IEnumerable<MyRACIT.Models.Entities.Assignment>
+
+@{
+    ViewData["Title"] = "Завдання курсу";
+    var courseId = ViewBag.CourseId as int?;
+    var courseName = ViewBag.CourseName as string;
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item active">@courseName</li>
+            </ol>
+        </nav>
+        <h2>📝 Завдання курсу</h2>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>ℹ️ Інформація:</strong> Завдання відсутні.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var assignment in Model)
+        {
+            var mySubmission = ViewBag.GetMySubmission(assignment.Id);
+            var hasSubmission = mySubmission != null;
+            var isGraded = hasSubmission && mySubmission.Grade != null;
+            var isOverdue = assignment.Deadline < DateTime.Now;
+            var canSubmit = !hasSubmission && !isOverdue;
+            
+            <div class="col-12 mb-3">
+                <div class="card @(isOverdue && !hasSubmission ? "border-danger" : "")">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">
+                                    @assignment.Title
+                                    @if (isGraded)
+                                    {
+                                        <span class="badge bg-success ms-2">Оцінено</span>
+                                    }
+                                    else if (hasSubmission)
+                                    {
+                                        <span class="badge bg-warning ms-2">Здано</span>
+                                    }
+                                    else if (isOverdue)
+                                    {
+                                        <span class="badge bg-danger ms-2">Прострочено</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary ms-2">Не здано</span>
+                                    }
+                                </h5>
+                                <p class="card-text text-muted">@assignment.Description</p>
+                                
+                                <div class="d-flex gap-3 mt-2">
+                                    <span><strong>Створено:</strong> @assignment.CreatedAt.ToString("dd.MM.yyyy")</span>
+                                    <span class="@(isOverdue ? "text-danger" : "text-success")">
+                                        <strong>Дедлайн:</strong> @assignment.Deadline.ToString("dd.MM.yyyy HH:mm")
+                                    </span>
+                                    <span><strong>Макс. балів:</strong> @assignment.MaxGrade</span>
+                                </div>
+                                
+                                @if (isGraded)
+                                {
+                                    var grade = mySubmission.Grade;
+                                    var percentage = (double)grade.Value / assignment.MaxGrade * 100;
+                                    var badgeClass = percentage >= 75 ? "bg-success" : percentage >= 50 ? "bg-warning" : "bg-danger";
+                                    
+                                    <div class="mt-3 alert alert-success">
+                                        <strong>Ваша оцінка:</strong> 
+                                        <span class="badge @badgeClass">@grade.Value / @assignment.MaxGrade</span>
+                                        @if (!string.IsNullOrEmpty(grade.Comment))
+                                        {
+                                            <p class="mb-0 mt-2"><strong>Коментар викладача:</strong> @grade.Comment</p>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                            <div class="col-md-4 text-end">
+                                @if (canSubmit)
+                                {
+                                    <a asp-action="SubmitAssignment" asp-route-id="@assignment.Id" 
+                                       class="btn btn-success">
+                                        📤 Здати роботу
+                                    </a>
+                                }
+                                else if (hasSubmission && !isGraded)
+                                {
+                                    <button class="btn btn-secondary" disabled>
+                                        ⏳ Очікує оцінки
+                                    </button>
+                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission.Id" 
+                                       class="btn btn-info btn-sm mt-2">
+                                        👁️ Переглянути здачу
+                                    </a>
+                                }
+                                else if (isGraded)
+                                {
+                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission.Id" 
+                                       class="btn btn-info">
+                                        👁️ Переглянути здачу
+                                    </a>
+                                }
+                                else if (isOverdue)
+                                {
+                                    <button class="btn btn-danger" disabled>
+                                        ❌ Прострочено
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

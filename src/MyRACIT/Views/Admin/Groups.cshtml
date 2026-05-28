@@ -1,0 +1,96 @@
+@model IEnumerable<MyRACIT.Models.Entities.Group>
+
+@{
+    ViewData["Title"] = "Управління групами";
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h2>👥 Управління групами</h2>
+    </div>
+    <div class="col text-end">
+        <a asp-action="CreateGroup" class="btn btn-success">
+            ➕ Додати групу
+        </a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>ℹ️ Інформація:</strong> Групи відсутні. Додайте першу групу.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Назва групи</th>
+                        <th>Спеціальність</th>
+                        <th>Курс</th>
+                        <th style="width: 150px;">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = 1;
+                    }
+                    @foreach (var group in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td><strong>@group.Name</strong></td>
+                            <td>@group.Specialty?.Code - @group.Specialty?.Name</td>
+                            <td><span class="badge bg-info">@group.StudyYear курс</span></td>
+                            <td>
+                                <a asp-action="EditGroup" asp-route-id="@group.Id" 
+                                   class="btn btn-sm btn-primary" title="Редагувати">
+                                    ✏️
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal@(group.Id)"
+                                        title="Видалити">
+                                    🗑️
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <div class="modal fade" id="deleteModal@(group.Id)" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">Підтвердження видалення</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Ви впевнені, що хочете видалити групу <strong>"@group.Name"</strong>?</p>
+                                        <p class="text-danger"><small>⚠️ Увага: Ця дія незворотня!</small></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                                        <form asp-action="DeleteGroup" asp-route-id="@group.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-danger">Так, видалити</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <p class="text-muted">
+            <small>Всього груп: <strong>@Model.Count()</strong></small>
+        </p>
+    </div>
+}

@@ -1,0 +1,103 @@
+@model MyRACIT.Models.Entities.Course
+
+@{
+    ViewData["Title"] = "Деталі курсу";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item active">@Model.Subject?.Title</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">📖 @Model.Subject?.Title</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Інформація про курс</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Предмет:</th>
+                                <td><strong>@Model.Subject?.Title</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Викладач:</th>
+                                <td>@Model.Teacher?.User?.Name</td>
+                            </tr>
+                            <tr>
+                                <th>Email викладача:</th>
+                                <td>@Model.Teacher?.User?.Email</td>
+                            </tr>
+                            <tr>
+                                <th>Період:</th>
+                                <td>
+                                    @Model.StartDate.ToString("dd.MM.yyyy") - @Model.EndDate.ToString("dd.MM.yyyy")
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Моя статистика</h5>
+                        <div class="row text-center">
+                            <div class="col-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.TotalAssignments</h3>
+                                        <small class="text-muted">Всього завдань</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.MySubmissions</h3>
+                                        <small class="text-muted">Здано мною</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.MyGrades</h3>
+                                        <small class="text-muted">Оцінено</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.AverageGrade</h3>
+                                        <small class="text-muted">Середній бал</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr />
+                
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary">⬅️ До курсів</a>
+                    <div>
+                        <a asp-action="Assignments" asp-route-courseId="@Model.Id" class="btn btn-success">
+                            📝 Завдання
+                        </a>
+                        <a asp-action="MySubmissions" asp-route-courseId="@Model.Id" class="btn btn-info">
+                            📬 Мої здачі
+                        </a>
+                        <a asp-action="MyGrades" asp-route-courseId="@Model.Id" class="btn btn-warning">
+                            ⭐ Мої оцінки
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

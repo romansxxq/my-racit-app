@@ -1,0 +1,107 @@
+@model IEnumerable<MyRACIT.Models.Entities.Assignment>
+
+@{
+    ViewData["Title"] = "Управління завданнями";
+    var courseId = ViewBag.CourseId as int?;
+    var courseName = ViewBag.CourseName as string;
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item active">@courseName</li>
+            </ol>
+        </nav>
+        <h2>📝 Завдання курсу</h2>
+    </div>
+    <div class="col text-end">
+        <a asp-action="CreateAssignment" asp-route-courseId="@courseId" class="btn btn-success">
+            ➕ Створити завдання
+        </a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>ℹ️ Інформація:</strong> Завдання відсутні. Створіть перше завдання для студентів.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var assignment in Model)
+        {
+            var isOverdue = assignment.Deadline < DateTime.Now;
+            var deadlineClass = isOverdue ? "text-danger" : "text-success";
+            
+            <div class="col-12 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="card-title">@assignment.Title</h5>
+                                <p class="card-text text-muted">@assignment.Description</p>
+                                
+                                <div class="d-flex gap-3 mt-2">
+                                    <span><strong>Створено:</strong> @assignment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                                    <span class="@deadlineClass">
+                                        <strong>Дедлайн:</strong> @assignment.Deadline.ToString("dd.MM.yyyy HH:mm")
+                                        @if (isOverdue)
+                                        {
+                                            <span class="badge bg-danger ms-1">Прострочено</span>
+                                        }
+                                    </span>
+                                    <span><strong>Макс. балів:</strong> @assignment.MaxGrade</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <div class="mb-2">
+                                    <h4>@ViewBag.GetSubmissionsCount(assignment.Id) / @ViewBag.GetStudentsCount(assignment.Course?.GroupId)</h4>
+                                    <small class="text-muted">Здано робіт</small>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="EditAssignment" asp-route-id="@assignment.Id" class="btn btn-sm btn-primary">
+                                        ✏️ Редагувати
+                                    </a>
+                                    <a asp-action="Submissions" asp-route-assignmentId="@assignment.Id" class="btn btn-sm btn-info">
+                                        📬 Здачі
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal@(assignment.Id)">
+                                        🗑️
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Delete Modal -->
+                <div class="modal fade" id="deleteModal@(assignment.Id)" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title">Підтвердження видалення</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Ви впевнені, що хочете видалити завдання <strong>"@assignment.Title"</strong>?</p>
+                                <p class="text-danger"><small>⚠️ Увага: Будуть видалені всі здачі та оцінки студентів!</small></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                                <form asp-action="DeleteAssignment" asp-route-id="@assignment.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-danger">Так, видалити</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

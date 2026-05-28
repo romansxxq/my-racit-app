@@ -41,12 +41,16 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<MyRacitDbContext>();
-        await DatabaseSeeder.SeedAsync(context);
+        var userService = services.GetRequiredService<IUserService>();
+        var logger = services.GetRequiredService<ILogger<DataSeeder>>();
+        
+        var seeder = new DataSeeder(context, userService, logger);
+        await seeder.SeedAsync();
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Помилка при заповненні бази даних тестовими даними");
+        logger.LogError(ex, "❌ Помилка при заповненні бази даних тестовими даними");
     }
 }
 

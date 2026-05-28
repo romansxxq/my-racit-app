@@ -1,0 +1,144 @@
+@model IEnumerable<MyRACIT.Models.Entities.Grade>
+
+@{
+    ViewData["Title"] = "Мої оцінки";
+    var courseId = ViewBag.CourseId as int?;
+    var courseName = ViewBag.CourseName as string;
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h2>⭐ Мої оцінки</h2>
+        @if (!string.IsNullOrEmpty(courseName))
+        {
+            <p class="text-muted">Курс: <strong>@courseName</strong></p>
+        }
+        else
+        {
+            <p class="text-muted">Всі мої оцінки</p>
+        }
+    </div>
+    <div class="col text-end">
+        <a asp-action="Index" class="btn btn-secondary">⬅️ До курсів</a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>ℹ️ Інформація:</strong> У вас поки немає оцінок.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Курс</th>
+                        <th>Завдання</th>
+                        <th>Оцінка</th>
+                        <th>%</th>
+                        <th>Дата</th>
+                        <th>Коментар</th>
+                        <th style="width: 100px;">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = 1;
+                    }
+                    @foreach (var grade in Model)
+                    {
+                        var percentage = (double)grade.Value / grade.Submission?.Assignment?.MaxGrade * 100;
+                        var badgeClass = percentage >= 75 ? "bg-success" : percentage >= 50 ? "bg-warning" : "bg-danger";
+                        
+                        <tr>
+                            <td>@index</td>
+                            <td>@grade.Course?.Subject?.Title</td>
+                            <td>@grade.Submission?.Assignment?.Title</td>
+                            <td>
+                                <span class="badge @badgeClass">
+                                    @grade.Value / @grade.Submission?.Assignment?.MaxGrade
+                                </span>
+                            </td>
+                            <td>@string.Format("{0:F1}", percentage)%</td>
+                            <td>@grade.DateIssued.ToString("dd.MM.yyyy")</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(grade.Comment))
+                                {
+                                    <span title="@grade.Comment" data-bs-toggle="tooltip">
+                                        @(grade.Comment.Length > 30 ? grade.Comment.Substring(0, 30) + "..." : grade.Comment)
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="ViewSubmission" asp-route-id="@grade.SubmissionId" 
+                                   class="btn btn-sm btn-info" title="Переглянути">
+                                    👁️
+                                </a>
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h4>@Model.Count()</h4>
+                        <small class="text-muted">Всього оцінок</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h4>@Model.Average(g => g.Value).ToString("F2")</h4>
+                        <small class="text-muted">Середній бал</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        <h4>@Model.Max(g => g.Value)</h4>
+                        <small class="text-muted">Найвища оцінка</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-light">
+                    <div class="card-body text-center">
+                        @{
+                            var avgPercentage = Model.Average(g => (double)g.Value / g.Submission.Assignment.MaxGrade * 100);
+                        }
+                        <h4>@string.Format("{0:F1}", avgPercentage)%</h4>
+                        <small class="text-muted">Середній %</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        // Initialize Bootstrap tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}

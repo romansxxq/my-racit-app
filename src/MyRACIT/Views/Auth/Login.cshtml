@@ -1,0 +1,166 @@
+@model MyRACIT.Models.DTOs.LoginDto
+
+@{
+    ViewData["Title"] = "Вхід в систему";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - My RACIT</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header h1 {
+            color: #667eea;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .login-header p {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-login {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px;
+            font-weight: bold;
+            color: white;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .form-check-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .alert {
+            border-radius: 10px;
+        }
+        .test-credentials {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #495057;
+        }
+        .test-credentials h6 {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .test-credentials code {
+            background: #e9ecef;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #e83e8c;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>🎓 My RACIT</h1>
+            <p>Інформаційна система управління навчальним процесом РФКІТ</p>
+        </div>
+
+        @if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>❌ Помилка!</strong> @ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>✅ Успішно!</strong> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">📧 Email</label>
+                <input asp-for="Email" class="form-control" placeholder="your.email@rfkit.edu.ua" autofocus />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">🔒 Пароль</label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Введіть пароль" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="RememberMe" type="checkbox" class="form-check-input" id="rememberMe" />
+                <label class="form-check-label" for="rememberMe">
+                    Запам'ятати мене (30 днів)
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-login">
+                Увійти в систему
+            </button>
+        </form>
+
+        <div class="test-credentials">
+            <h6>🧪 Тестові облікові записи:</h6>
+            <p class="mb-1"><strong>Адміністратор:</strong> <code>admin@rfkit.edu.ua</code> / <code>Admin123</code></p>
+            <p class="mb-1"><strong>Викладач:</strong> <code>teacher@rfkit.edu.ua</code> / <code>Teacher123</code></p>
+            <p class="mb-0"><strong>Студент:</strong> <code>student@rfkit.edu.ua</code> / <code>Student123</code></p>
+        </div>
+
+        <div class="text-center mt-3">
+            <small class="text-muted">© 2026 РФКІТ. Всі права захищені.</small>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+</body>
+</html>

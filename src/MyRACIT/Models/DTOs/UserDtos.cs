@@ -55,6 +55,11 @@ namespace MyRACIT.Models.DTOs
         
         [Required(ErrorMessage = "Пароль є обов'язковим")]
         public string Password { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// Запам'ятати мене (30 днів)
+        /// </summary>
+        public bool RememberMe { get; set; }
     }
     
     /// <summary>
