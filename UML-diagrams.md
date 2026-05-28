@@ -72,17 +72,29 @@ graph TB
 
 ## 2. Class діаграма (Діаграма класів)
 
+### 2.1. Виділення класів предметної області
+
+Система MyRACIT містить наступні класи:
+- **User** - базовий клас користувача системи
+- **UserRole** - enum для ролей користувачів
+- **StudentProfile** - профіль студента
+- **TeacherProfile** - профіль викладача
+- **Department** - кафедра закладу освіти
+- **Specialty** - спеціальність
+- **Group** - навчальна група
+- **Subject** - навчальна дисципліна (предмет)
+- **Course** - семестровий курс (зв'язок предмету, викладача та групи)
+- **Assignment** - навчальне завдання
+- **AssignmentFile** - файл прикріплений до завдання
+- **AssignmentLink** - посилання прикріплене до завдання
+- **Submission** - здана робота студента
+- **Grade** - оцінка за здану роботу
+
+### 2.2. Атрибути та методи класів
+
 ```mermaid
 classDiagram
-    class User {
-        +int Id
-        +string PasswordHash
-        +string Name
-        +string Email
-        +UserRole Role
-        +ToString() string
-    }
-    
+    %% ============ ENUM ============
     class UserRole {
         <<enumeration>>
         Admin
@@ -90,66 +102,70 @@ classDiagram
         Student
     }
     
+    %% ============ CORE ENTITIES ============
+    class User {
+        -int Id
+        -string PasswordHash
+        -string Name
+        -string Email
+        -UserRole Role
+        +ToString() string
+    }
+    
     class StudentProfile {
-        +int Id
-        +int UserId
-        +int GroupId
+        -int Id
+        -int UserId
+        -int GroupId
         +User User
         +Group Group
     }
     
     class TeacherProfile {
-        +int Id
-        +int UserId
-        +int DepartmentId
+        -int Id
+        -int UserId
+        -int DepartmentId
         +User User
         +Department Department
         +ToString() string
     }
     
+    %% ============ ORGANIZATION ============
     class Department {
-        +int Id
-        +string Name
-        +string Code
+        -int Id
+        -string Name
         +ToString() string
     }
     
     class Specialty {
-        +int Id
-        +string Name
-        +string Code
-        +int DepartmentId
-        +Department Department
+        -int Id
+        -string Code
+        -string Name
         +ToString() string
     }
     
     class Group {
-        +int Id
-        +string Name
-        +int StudyYear
-        +int SpecialtyId
+        -int Id
+        -string Name
+        -int StudyYear
+        -int SpecialtyId
         +Specialty Specialty
         +ToString() string
     }
     
     class Subject {
-        +int Id
-        +string Title
-        +string Code
-        +string Description
-        +int Credits
-        +int DepartmentId
-        +Department Department
+        -int Id
+        -string Title
         +ToString() string
     }
     
+    %% ============ ACADEMIC PROCESS ============
     class Course {
-        +int Id
-        +int SubjectId
-        +int TeacherId
-        +int GroupId
-        +DateTime StartDate
-        +DateTime EndDate
+        -int Id
+        -int SubjectId
+        -int TeacherId
+        -int GroupId
+        -DateTime StartDate
+        -DateTime EndDate
         +Subject Subject
         +TeacherProfile Teacher
         +Group Group
@@ -157,93 +173,183 @@ classDiagram
     }
     
     class Assignment {
-        +int Id
-        +string Title
-        +string Description
-        +DateTime Deadline
-        +int MaxGrade
-        +int CourseId
+        -int Id
+        -string Title
+        -string Description
+        -DateTime Deadline
+        -int MaxGrade
+        -int CourseId
         +Course Course
         +ToString() string
     }
     
-    class Submission {
-        +int Id
-        +int StudentId
-        +int AssignmentId
-        +DateTime SubmittedAt
-        +string Content
-        +string FilePath
-        +StudentProfile Student
-        +Assignment Assignment
-    }
-    
-    class Grade {
-        +int Id
-        +int StudentId
-        +int AssignmentId
-        +int Value
-        +DateTime DateIssued
-        +string Feedback
-        +StudentProfile Student
+    class AssignmentFile {
+        -int Id
+        -int AssignmentId
+        -string FilePath
+        -string FileName
+        -DateTime UploadedAt
         +Assignment Assignment
         +ToString() string
     }
     
-    %% Relationships
-    User "1" --> "1" UserRole : має роль
-    User "1" <-- "0..1" StudentProfile : профіль студента
-    User "1" <-- "0..1" TeacherProfile : профіль викладача
+    class AssignmentLink {
+        -int Id
+        -int AssignmentId
+        -string Url
+        -string Label
+        +Assignment Assignment
+        +ToString() string
+    }
     
-    Department "1" <-- "*" TeacherProfile : працює на
-    Department "1" <-- "*" Specialty : належить до
-    Department "1" <-- "*" Subject : викладається на
+    class Submission {
+        -int Id
+        -int AssignmentId
+        -int StudentId
+        -string FilePath
+        -DateTime SubmittedAt
+        +Assignment Assignment
+        +StudentProfile Student
+        +ToString() string
+    }
     
-    Specialty "1" <-- "*" Group : навчається за
+    class Grade {
+        -int Id
+        -int StudentId
+        -int SubmissionId
+        -int Value
+        -DateTime DateIssued
+        -string Feedback
+        +StudentProfile Student
+        +Submission Submission
+        +ToString() string
+    }
     
-    Group "1" <-- "*" StudentProfile : навчається в
-    Group "1" <-- "*" Course : проводиться для
+    %% ============ RELATIONSHIPS ============
     
-    Subject "1" <-- "*" Course : викладається як
-    TeacherProfile "1" <-- "*" Course : веде
+    %% User and Roles (Association)
+    User --> UserRole : має роль
     
-    Course "1" <-- "*" Assignment : має завдання
+    %% User and Profiles (Composition - профіль не існує без користувача)
+    User "1" *-- "0..1" StudentProfile : має профіль студента
+    User "1" *-- "0..1" TeacherProfile : має профіль викладача
     
-    StudentProfile "1" <-- "*" Submission : подає роботу
-    Assignment "1" <-- "*" Submission : має подання
+    %% Department relationships (Aggregation - кафедра може існувати без викладачів)
+    Department "1" o-- "0..*" TeacherProfile : працює на
     
-    StudentProfile "1" <-- "*" Grade : отримує оцінку
-    Assignment "1" <-- "*" Grade : оцінюється за
+    %% Specialty and Group (Composition - група завжди належить спеціальності)
+    Specialty "1" *-- "0..*" Group : містить групи
+    
+    %% Group and Students (Aggregation - група може існувати без студентів)
+    Group "1" o-- "0..*" StudentProfile : навчається в
+    
+    %% Course relationships (Association)
+    Subject "1" -- "0..*" Course : викладається як
+    TeacherProfile "1" -- "0..*" Course : веде
+    Group "1" -- "0..*" Course : проводиться для
+    
+    %% Assignment relationships (Composition - завдання не існує без курсу)
+    Course "1" *-- "0..*" Assignment : має завдання
+    
+    %% Assignment resources (Composition - файли/посилання не існують без завдання)
+    Assignment "1" *-- "0..*" AssignmentFile : має файли
+    Assignment "1" *-- "0..*" AssignmentLink : має посилання
+    
+    %% Submission relationships (Composition - подання не існує без завдання)
+    Assignment "1" *-- "0..*" Submission : отримує подання
+    StudentProfile "1" -- "0..*" Submission : подає роботу
+    
+    %% Grade relationships (Composition - оцінка не існує без подання)
+    Submission "1" *-- "0..1" Grade : оцінюється
+    StudentProfile "1" -- "0..*" Grade : отримує оцінку
 ```
+
+### 2.3. Типи зв'язків між класами
+
+**Асоціація (Association)** `--`:
+- User → UserRole: користувач має роль
+- Subject → Course: предмет викладається як курс
+- TeacherProfile → Course: викладач веде курс
+- Group → Course: група відвідує курс
+- StudentProfile → Submission: студент подає роботу
+- StudentProfile → Grade: студент отримує оцінку
+
+**Агрегація (Aggregation)** `o--` (ціле може існувати без частин):
+- Department o-- TeacherProfile: кафедра може існувати без викладачів
+- Group o-- StudentProfile: група може існувати без студентів
+
+**Композиція (Composition)** `*--` (ціле не може існувати без частин, або частина не існує без цілого):
+- User *-- StudentProfile: профіль студента не існує без користувача
+- User *-- TeacherProfile: профіль викладача не існує без користувача
+- Specialty *-- Group: група завжди належить спеціальності
+- Course *-- Assignment: завдання не існує без курсу
+- Assignment *-- AssignmentFile: файл не існує без завдання
+- Assignment *-- AssignmentLink: посилання не існує без завдання
+- Assignment *-- Submission: подання не існує без завдання
+- Submission *-- Grade: оцінка не існує без конкретної зданої роботи
+
+**Наслідування (Inheritance)**: 
+- Не використовується в даній системі (всі класи незалежні)
+
+### 2.4. Пояснення структури класів
+
+#### Базові класи (Core Entities):
+- **User** - центральний клас системи, що представляє користувача. Має роль (Admin/Teacher/Student) та базову інформацію (ім'я, email, пароль)
+- **StudentProfile** / **TeacherProfile** - розширюють функціональність User додатковою інформацією про студента або викладача
+- **UserRole** - enum для строгої типізації ролей
+
+#### Організаційна структура (Organization):
+- **Department** - кафедра закладу освіти
+- **Specialty** - спеціальність (наприклад, "Інженерія програмного забезпечення")
+- **Group** - академічна група студентів (наприклад, "ІПЗ-21")
+- **Subject** - навчальна дисципліна (наприклад, "Програмування на C#")
+
+#### Навчальний процес (Academic Process):
+- **Course** - семестровий курс, що зв'язує Subject, Teacher та Group
+- **Assignment** - завдання для курсу (домашня робота або лабораторна)
+- **AssignmentFile** - файли прикріплені до завдання (презентації, методички)
+- **AssignmentLink** - посилання на ресурси для завдання
+- **Submission** - здана робота студента
+- **Grade** - оцінка за конкретну здану роботу
+
+#### Ключові рішення архітектури:
+1. **Grade прив'язаний до Submission**, а не Assignment - це дозволяє оцінювати конкретну здачу, підтримувати перездачі
+2. **AssignmentFile та AssignmentLink** - окремі таблиці для матеріалів завдання (масштабованість)
+3. **Composition для Grade-Submission** - оцінка не може існувати без конкретної зданої роботи
+4. **Aggregation для Group-Student** - група може існувати без студентів (на початку семестру)
 
 ## 3. ER-діаграма (Entity-Relationship)
 
 ```mermaid
 erDiagram
-    User ||--o| StudentProfile : "має"
-    User ||--o| TeacherProfile : "має"
-    User ||--|| UserRole : "належить до"
+    %% ============ USER MANAGEMENT ============
+    User ||--o| StudentProfile : "має профіль"
+    User ||--o| TeacherProfile : "має профіль"
     
-    Department ||--o{ TeacherProfile : "працюють"
-    Department ||--o{ Specialty : "містить"
-    Department ||--o{ Subject : "викладає"
+    %% ============ ORGANIZATION ============
+    Department ||--o{ TeacherProfile : "працюють на"
     
-    Specialty ||--o{ Group : "навчаються"
+    Specialty ||--o{ Group : "містить групи"
     
     Group ||--o{ StudentProfile : "навчаються в"
     Group ||--o{ Course : "відвідують"
     
-    Subject ||--o{ Course : "є курсом"
-    TeacherProfile ||--o{ Course : "веде"
+    %% ============ ACADEMIC PROCESS ============
+    Subject ||--o{ Course : "викладається як"
+    TeacherProfile ||--o{ Course : "веде курс"
     
     Course ||--o{ Assignment : "має завдання"
     
-    StudentProfile ||--o{ Submission : "подає"
-    Assignment ||--o{ Submission : "отримує подання"
+    Assignment ||--o{ AssignmentFile : "має файли"
+    Assignment ||--o{ AssignmentLink : "має посилання"
+    Assignment ||--o{ Submission : "отримує здачі"
     
-    StudentProfile ||--o{ Grade : "отримує"
-    Assignment ||--o{ Grade : "оцінюється"
+    StudentProfile ||--o{ Submission : "подає роботи"
     
+    Submission ||--o| Grade : "оцінюється"
+    StudentProfile ||--o{ Grade : "отримує оцінки"
+    
+    %% ============ ENTITY DEFINITIONS ============
     User {
         int Id PK
         string PasswordHash
@@ -267,14 +373,12 @@ erDiagram
     Department {
         int Id PK
         string Name
-        string Code
     }
     
     Specialty {
         int Id PK
-        string Name
         string Code
-        int DepartmentId FK
+        string Name
     }
     
     Group {
@@ -287,10 +391,6 @@ erDiagram
     Subject {
         int Id PK
         string Title
-        string Code
-        string Description
-        int Credits
-        int DepartmentId FK
     }
     
     Course {
@@ -298,34 +398,48 @@ erDiagram
         int SubjectId FK
         int TeacherId FK
         int GroupId FK
-        date StartDate
-        date EndDate
+        DateTime StartDate
+        DateTime EndDate
     }
     
     Assignment {
         int Id PK
         string Title
         string Description
-        datetime Deadline
+        DateTime Deadline
         int MaxGrade
         int CourseId FK
     }
     
+    AssignmentFile {
+        int Id PK
+        int AssignmentId FK
+        string FilePath
+        string FileName
+        DateTime UploadedAt
+    }
+    
+    AssignmentLink {
+        int Id PK
+        int AssignmentId FK
+        string Url
+        string Label
+    }
+    
     Submission {
         int Id PK
-        int StudentId FK
         int AssignmentId FK
-        datetime SubmittedAt
-        string Content
+        int StudentId FK
         string FilePath
+        DateTime SubmittedAt
     }
     
     Grade {
         int Id PK
         int StudentId FK
-        int AssignmentId FK
+        int SubmissionId FK
         int Value
-        datetime DateIssued
+        DateTime DateIssued
         string Feedback
     }
 ```
