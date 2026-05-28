@@ -1,0 +1,72 @@
+@model MyRACIT.Models.Entities.Grade
+
+@{
+    ViewData["Title"] = "Редагувати оцінку";
+    var submission = ViewBag.Submission as MyRACIT.Models.Entities.Submission;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Submissions">Здачі</a></li>
+                <li class="breadcrumb-item active">Редагування оцінки</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">✏️ Редагування оцінки</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Студент:</strong> @submission?.Student?.User?.Name (@submission?.Student?.Group?.Name)<br />
+                    <strong>Завдання:</strong> @submission?.Assignment?.Title<br />
+                    <strong>Здано:</strong> @submission?.SubmittedAt.ToString("dd.MM.yyyy HH:mm")
+                </div>
+                
+                <form asp-action="EditGrade" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="StudentProfileId" />
+                    <input type="hidden" asp-for="CourseId" />
+                    <input type="hidden" asp-for="SubmissionId" />
+                    <input type="hidden" asp-for="DateIssued" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Value" class="form-label">Оцінка <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input asp-for="Value" type="number" class="form-control" 
+                                   min="0" max="@submission?.Assignment?.MaxGrade" />
+                            <span class="input-group-text">/ @submission?.Assignment?.MaxGrade</span>
+                        </div>
+                        <span asp-validation-for="Value" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Comment" class="form-label">Коментар (необов'язково)</label>
+                        <textarea asp-for="Comment" class="form-control" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <small>⚠️ Увага: Зміна оцінки буде видима студенту після збереження.</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="SubmissionDetails" asp-route-id="@submission?.Id" class="btn btn-secondary">
+                            ⬅️ Назад
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            💾 Зберегти зміни
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

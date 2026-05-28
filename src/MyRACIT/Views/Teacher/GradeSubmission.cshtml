@@ -1,0 +1,64 @@
+@model MyRACIT.Models.Entities.Submission
+
+@{
+    ViewData["Title"] = "Оцінити роботу";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Submissions">Здачі</a></li>
+                <li class="breadcrumb-item active">Оцінювання</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">⭐ Оцінювання роботи</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Студент:</strong> @Model.Student?.User?.Name (@Model.Student?.Group?.Name)<br />
+                    <strong>Завдання:</strong> @Model.Assignment?.Title<br />
+                    <strong>Здано:</strong> @Model.SubmittedAt.ToString("dd.MM.yyyy HH:mm")
+                </div>
+                
+                <form asp-action="GradeSubmission" method="post">
+                    <input type="hidden" name="SubmissionId" value="@Model.Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label for="Value" class="form-label">Оцінка <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <input type="number" name="Value" class="form-control" 
+                                   min="0" max="@Model.Assignment?.MaxGrade" required />
+                            <span class="input-group-text">/ @Model.Assignment?.MaxGrade</span>
+                        </div>
+                        <div class="form-text">Введіть оцінку від 0 до @Model.Assignment?.MaxGrade</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="Comment" class="form-label">Коментар (необов'язково)</label>
+                        <textarea name="Comment" class="form-control" rows="4" 
+                                  placeholder="Додайте коментар або зауваження для студента..."></textarea>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="SubmissionDetails" asp-route-id="@Model.Id" class="btn btn-secondary">
+                            ⬅️ Назад
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Виставити оцінку
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

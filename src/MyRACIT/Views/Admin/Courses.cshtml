@@ -1,0 +1,100 @@
+@model IEnumerable<MyRACIT.Models.Entities.Course>
+
+@{
+    ViewData["Title"] = "Управління курсами";
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h2>📖 Управління курсами</h2>
+    </div>
+    <div class="col text-end">
+        <a asp-action="CreateCourse" class="btn btn-success">
+            ➕ Додати курс
+        </a>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>ℹ️ Інформація:</strong> Курси відсутні. Додайте перший курс.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Предмет</th>
+                        <th>Група</th>
+                        <th>Викладач</th>
+                        <th>Період</th>
+                        <th style="width: 150px;">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = 1;
+                    }
+                    @foreach (var course in Model)
+                    {
+                        <tr>
+                            <td>@index</td>
+                            <td><strong>@course.Subject?.Title</strong></td>
+                            <td><span class="badge bg-info">@course.Group?.Name</span></td>
+                            <td>@course.Teacher?.User?.Name</td>
+                            <td>
+                                <small>@course.StartDate.ToString("dd.MM.yyyy") - @course.EndDate.ToString("dd.MM.yyyy")</small>
+                            </td>
+                            <td>
+                                <a asp-action="CourseDetails" asp-route-id="@course.Id" 
+                                   class="btn btn-sm btn-info" title="Деталі">
+                                    👁️
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#deleteModal@(course.Id)"
+                                        title="Видалити">
+                                    🗑️
+                                </button>
+                            </td>
+                        </tr>
+                        
+                        <div class="modal fade" id="deleteModal@(course.Id)" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-danger text-white">
+                                        <h5 class="modal-title">Підтвердження видалення</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Ви впевнені, що хочете видалити курс <strong>"@course.Subject?.Title" для групи "@course.Group?.Name"</strong>?</p>
+                                        <p class="text-danger"><small>⚠️ Увага: Ця дія незворотня!</small></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                                        <form asp-action="DeleteCourse" asp-route-id="@course.Id" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-danger">Так, видалити</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <p class="text-muted">
+            <small>Всього курсів: <strong>@Model.Count()</strong></small>
+        </p>
+    </div>
+}

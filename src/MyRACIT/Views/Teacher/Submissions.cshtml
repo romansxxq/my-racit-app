@@ -1,0 +1,112 @@
+@model IEnumerable<MyRACIT.Models.Entities.Submission>
+
+@{
+    ViewData["Title"] = "Здані роботи";
+    var assignmentId = ViewBag.AssignmentId as int?;
+    var assignmentTitle = ViewBag.AssignmentTitle as string;
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Assignments">Завдання</a></li>
+                <li class="breadcrumb-item active">Здачі</li>
+            </ol>
+        </nav>
+        <h2>📬 Здані роботи</h2>
+        @if (!string.IsNullOrEmpty(assignmentTitle))
+        {
+            <p class="text-muted">Завдання: <strong>@assignmentTitle</strong></p>
+        }
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong>ℹ️ Інформація:</strong> Жодної роботи ще не здано.
+    </div>
+}
+else
+{
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>№</th>
+                        <th>Студент</th>
+                        <th>Завдання</th>
+                        <th>Дата здачі</th>
+                        <th>Статус</th>
+                        <th>Оцінка</th>
+                        <th style="width: 150px;">Дії</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var index = 1;
+                    }
+                    @foreach (var submission in Model)
+                    {
+                        var hasGrade = submission.Grade != null;
+                        var statusBadge = hasGrade ? "bg-success" : "bg-warning";
+                        var statusText = hasGrade ? "Оцінено" : "Очікує оцінки";
+                        
+                        <tr>
+                            <td>@index</td>
+                            <td>
+                                <strong>@submission.Student?.User?.Name</strong><br />
+                                <small class="text-muted">@submission.Student?.Group?.Name</small>
+                            </td>
+                            <td>@submission.Assignment?.Title</td>
+                            <td>@submission.SubmittedAt.ToString("dd.MM.yyyy HH:mm")</td>
+                            <td><span class="badge @statusBadge">@statusText</span></td>
+                            <td>
+                                @if (hasGrade)
+                                {
+                                    <span class="badge bg-primary">@submission.Grade?.Value / @submission.Assignment?.MaxGrade</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="SubmissionDetails" asp-route-id="@submission.Id" 
+                                   class="btn btn-sm btn-info" title="Переглянути">
+                                    👁️
+                                </a>
+                                @if (!hasGrade)
+                                {
+                                    <a asp-action="GradeSubmission" asp-route-id="@submission.Id" 
+                                       class="btn btn-sm btn-success" title="Оцінити">
+                                        ⭐
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-action="EditGrade" asp-route-submissionId="@submission.Id" 
+                                       class="btn btn-sm btn-warning" title="Змінити оцінку">
+                                        ✏️
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                        index++;
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <p class="text-muted">
+            <small>Всього здач: <strong>@Model.Count()</strong></small>
+            <small class="ms-3">Оцінено: <strong>@Model.Count(s => s.Grade != null)</strong></small>
+            <small class="ms-3">Очікує оцінки: <strong>@Model.Count(s => s.Grade == null)</strong></small>
+        </p>
+    </div>
+}

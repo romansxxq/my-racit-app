@@ -1,0 +1,69 @@
+@model MyRACIT.Models.Entities.Assignment
+
+@{
+    ViewData["Title"] = "Здати роботу";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Assignments" asp-route-courseId="@Model.CourseId">Завдання</a></li>
+                <li class="breadcrumb-item active">Здача роботи</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">📤 Здача роботи</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <h5>@Model.Title</h5>
+                    <p class="mb-0">@Model.Description</p>
+                    <hr />
+                    <p class="mb-0">
+                        <strong>Дедлайн:</strong> @Model.Deadline.ToString("dd.MM.yyyy HH:mm")<br />
+                        <strong>Макс. балів:</strong> @Model.MaxGrade
+                    </p>
+                </div>
+                
+                <form asp-action="SubmitAssignment" method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="AssignmentId" value="@Model.Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label for="Content" class="form-label">Текст роботи <span class="text-danger">*</span></label>
+                        <textarea name="Content" class="form-control" rows="10" required
+                                  placeholder="Введіть текст роботи, відповіді на питання або опис виконаного завдання..."></textarea>
+                        <div class="form-text">Мінімум 10 символів</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="File" class="form-label">Прикріпити файл (необов'язково)</label>
+                        <input type="file" name="File" class="form-control" />
+                        <div class="form-text">Максимальний розмір файлу: 10 МБ</div>
+                    </div>
+                    
+                    <div class="alert alert-warning">
+                        <small>⚠️ Увага: Після здачі роботи ви не зможете її змінити. Переконайтеся, що все правильно!</small>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="Assignments" asp-route-courseId="@Model.CourseId" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            📤 Здати роботу
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

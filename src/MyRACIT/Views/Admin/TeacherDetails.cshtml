@@ -1,0 +1,80 @@
+@model MyRACIT.Models.Entities.TeacherProfile
+
+@{
+    ViewData["Title"] = $"Деталі викладача - {Model.User?.Name}";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">👨‍🏫 Інформація про викладача</h4>
+                <a asp-action="Teachers" class="btn btn-light btn-sm">⬅️ Назад</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Особиста інформація</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>ПІБ:</th>
+                                <td><strong>@Model.User?.Name</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>@Model.User?.Email</td>
+                            </tr>
+                            <tr>
+                                <th>Роль:</th>
+                                <td><span class="badge bg-warning text-dark">Викладач</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Робоча інформація</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Кафедра:</th>
+                                <td><strong>@Model.Department?.Name</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <hr />
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Статистика</h5>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.TotalCourses</h3>
+                                        <p class="text-muted mb-0">Викладає курсів</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.TotalAssignments</h3>
+                                        <p class="text-muted mb-0">Створено завдань</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.TotalGradesGiven</h3>
+                                        <p class="text-muted mb-0">Виставлено оцінок</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

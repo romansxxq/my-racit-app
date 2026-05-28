@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Створити студента";
+    var groups = ViewBag.Groups as IEnumerable<MyRACIT.Models.Entities.Group>;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нового студента</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateStudent" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">ПІБ <span class="text-danger">*</span></label>
+                        <input type="text" name="Name" class="form-control" placeholder="Іванов Іван Іванович" required />
+                        <div class="form-text">Введіть повне ім'я студента</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="Email" class="form-control" placeholder="student@rfkit.edu.ua" required />
+                        <div class="form-text">Email буде використано для входу в систему</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="Password" class="form-label">Пароль <span class="text-danger">*</span></label>
+                        <input type="password" name="Password" class="form-control" placeholder="Мінімум 6 символів" required />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="GroupId" class="form-label">Група <span class="text-danger">*</span></label>
+                        <select name="GroupId" class="form-select" required>
+                            <option value="">-- Оберіть групу --</option>
+                            @if (groups != null)
+                            {
+                                @foreach (var group in groups)
+                                {
+                                    <option value="@group.Id">@group.Name (@group.Specialty?.Code)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Students" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

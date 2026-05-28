@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Створити викладача";
+    var departments = ViewBag.Departments as IEnumerable<MyRACIT.Models.Entities.Department>;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нового викладача</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateTeacher" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label for="Name" class="form-label">ПІБ <span class="text-danger">*</span></label>
+                        <input type="text" name="Name" class="form-control" placeholder="Петренко Петро Петрович" required />
+                        <div class="form-text">Введіть повне ім'я викладача</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="Email" class="form-label">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="Email" class="form-control" placeholder="teacher@rfkit.edu.ua" required />
+                        <div class="form-text">Email буде використано для входу в систему</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="Password" class="form-label">Пароль <span class="text-danger">*</span></label>
+                        <input type="password" name="Password" class="form-control" placeholder="Мінімум 6 символів" required />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="DepartmentId" class="form-label">Кафедра <span class="text-danger">*</span></label>
+                        <select name="DepartmentId" class="form-select" required>
+                            <option value="">-- Оберіть кафедру --</option>
+                            @if (departments != null)
+                            {
+                                @foreach (var dept in departments)
+                                {
+                                    <option value="@dept.Id">@dept.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Teachers" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
