@@ -33,6 +33,9 @@ namespace MyRACIT.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("Deadline")
                         .HasColumnType("datetime2");
 
@@ -183,6 +186,9 @@ namespace MyRACIT.Migrations
                     b.Property<int>("SubmissionId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SubmissionId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("Value")
                         .HasColumnType("int");
 
@@ -191,6 +197,10 @@ namespace MyRACIT.Migrations
                     b.HasIndex("StudentId");
 
                     b.HasIndex("SubmissionId");
+
+                    b.HasIndex("SubmissionId1")
+                        .IsUnique()
+                        .HasFilter("[SubmissionId1] IS NOT NULL");
 
                     b.ToTable("Grades");
                 });
@@ -453,6 +463,10 @@ namespace MyRACIT.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("MyRACIT.Models.Entities.Submission", null)
+                        .WithOne("Grade")
+                        .HasForeignKey("MyRACIT.Models.Entities.Grade", "SubmissionId1");
+
                     b.Navigation("Student");
 
                     b.Navigation("Submission");
@@ -524,6 +538,11 @@ namespace MyRACIT.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyRACIT.Models.Entities.Submission", b =>
+                {
+                    b.Navigation("Grade");
                 });
 #pragma warning restore 612, 618
         }

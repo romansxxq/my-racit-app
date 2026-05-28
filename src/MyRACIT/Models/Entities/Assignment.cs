@@ -21,6 +21,23 @@ namespace MyRACIT.Models.Entities
         public int CourseId { get; set; }
         [ForeignKey("CourseId")]
         public Course? Course { get; set; }
+        
+        // Aliases для Controllers (для зворотної сумісності)
+        [NotMapped]
+        public DateTime DueDate
+        {
+            get => Deadline;
+            set => Deadline = value;
+        }
+        
+        [NotMapped]
+        public int MaxPoints
+        {
+            get => MaxGrade;
+            set => MaxGrade = value;
+        }
+        
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public override string ToString() => $"{Title} (Група: {Course?.Group?.Name})";
     }

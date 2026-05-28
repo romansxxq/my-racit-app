@@ -20,6 +20,28 @@ namespace MyRACIT.Models.Entities
         public DateTime DateIssued { get; set; } = DateTime.UtcNow;
         [DataType(DataType.Html)]
         public string? Feedback { get; set; }
+        
+        // Aliases для Controllers (для зворотної сумісності)
+        [NotMapped]
+        public int StudentProfileId
+        {
+            get => StudentId;
+            set => StudentId = value;
+        }
+        
+        [NotMapped]
+        public int Points
+        {
+            get => Value;
+            set => Value = value;
+        }
+        
+        [NotMapped]
+        public DateTime GradedAt
+        {
+            get => DateIssued;
+            set => DateIssued = value;
+        }
 
         public override string ToString() => $"{Value} балів -> {Student?.User?.Name}";
     }
