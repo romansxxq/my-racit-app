@@ -13,7 +13,6 @@ builder.Services.AddDbContext<MyRacitDbContext>(options =>
 // Register services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IFileStorageService, FileStorageService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
 // Configure Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
