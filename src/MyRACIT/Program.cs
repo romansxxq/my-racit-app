@@ -1,9 +1,33 @@
 using MyRACIT.Data;
 using Microsoft.EntityFrameworkCore;
+using MyRACIT.Services;
+using MyRACIT.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MyRacitDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register services
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IFileStorageService, FileStorageService>();
+
+// Configure Authentication
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth/Login";
+        options.LogoutPath = "/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromHours(8);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Lax;
+    });
+
+builder.Services.AddAuthorization();
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -20,6 +44,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+// Authentication must be before Authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();
