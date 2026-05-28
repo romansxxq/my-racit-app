@@ -11,9 +11,9 @@ namespace MyRACIT.Models.Entities
         [ForeignKey("StudentId")]
         public StudentProfile? Student { get; set; }
         [Required]
-        public int AssignmentId { get; set; }
-        [ForeignKey("AssignmentId")]
-        public Assignment? Assignment { get; set; }
+        public int SubmissionId { get; set; }
+        [ForeignKey("SubmissionId")]
+        public Submission? Submission { get; set; }
         [Required(ErrorMessage = "Оцінка є обов'язковою!")]
         public int Value { get; set; }
         [Required]

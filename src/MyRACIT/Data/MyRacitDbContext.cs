@@ -18,6 +18,8 @@ namespace MyRACIT.Data
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Grade> Grades { get; set; }
+        public DbSet<AssignmentFile> AssignmentFiles { get; set; }
+        public DbSet<AssignmentLink> AssignmentLinks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -32,10 +34,22 @@ namespace MyRACIT.Data
                 .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Grade>()
-                .HasOne(g => g.Assignment)
+                .HasOne(g => g.Submission)
                 .WithMany()
-                .HasForeignKey(g => g.AssignmentId)
+                .HasForeignKey(g => g.SubmissionId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AssignmentFile>()
+                .HasOne(af => af.Assignment)
+                .WithMany()
+                .HasForeignKey(af => af.AssignmentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AssignmentLink>()
+                .HasOne(al => al.Assignment)
+                .WithMany()
+                .HasForeignKey(al => al.AssignmentId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<User>().HasData(new User
             {
