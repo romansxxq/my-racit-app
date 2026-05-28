@@ -1,0 +1,71 @@
+@model MyRACIT.Models.Entities.Assignment
+
+@{
+    ViewData["Title"] = "Створити завдання";
+    var courseId = ViewBag.CourseId as int?;
+    var courseName = ViewBag.CourseName as string;
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Assignments" asp-route-courseId="@courseId">@courseName</a></li>
+                <li class="breadcrumb-item active">Нове завдання</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нового завдання</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateAssignment" method="post">
+                    <input type="hidden" name="CourseId" value="@courseId" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Назва завдання <span class="text-danger">*</span></label>
+                        <input asp-for="Title" class="form-control" placeholder="Наприклад: Лабораторна робота №1" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Опис завдання <span class="text-danger">*</span></label>
+                        <textarea asp-for="Description" class="form-control" rows="5" 
+                                  placeholder="Детально опишіть що потрібно зробити..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <div class="form-text">Ви можете використовувати Markdown для форматування</div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Deadline" class="form-label">Дедлайн <span class="text-danger">*</span></label>
+                            <input asp-for="Deadline" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="Deadline" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="MaxGrade" class="form-label">Максимальний бал <span class="text-danger">*</span></label>
+                            <input asp-for="MaxGrade" type="number" class="form-control" min="1" max="100" value="100" />
+                            <span asp-validation-for="MaxGrade" class="text-danger"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <a asp-action="Assignments" asp-route-courseId="@courseId" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Створити завдання
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

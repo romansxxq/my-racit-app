@@ -1,0 +1,68 @@
+@model MyRACIT.Models.Entities.Group
+
+@{
+    ViewData["Title"] = "Редагувати групу";
+    var specialties = ViewBag.Specialties as IEnumerable<MyRACIT.Models.Entities.Specialty>;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">✏️ Редагування групи</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="EditGroup" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Назва групи <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="SpecialtyId" class="form-label">Спеціальність <span class="text-danger">*</span></label>
+                        <select asp-for="SpecialtyId" class="form-select">
+                            <option value="">-- Оберіть спеціальність --</option>
+                            @if (specialties != null)
+                            {
+                                @foreach (var specialty in specialties)
+                                {
+                                    <option value="@specialty.Id">@specialty.Code - @specialty.Name</option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="SpecialtyId" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="StudyYear" class="form-label">Курс <span class="text-danger">*</span></label>
+                        <select asp-for="StudyYear" class="form-select">
+                            <option value="">-- Оберіть курс --</option>
+                            <option value="1">1 курс</option>
+                            <option value="2">2 курс</option>
+                            <option value="3">3 курс</option>
+                            <option value="4">4 курс</option>
+                        </select>
+                        <span asp-validation-for="StudyYear" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Groups" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            💾 Зберегти зміни
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

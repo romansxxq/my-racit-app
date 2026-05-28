@@ -1,50 +1,209 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - MyRACIT</title>
+    <title>@ViewData["Title"] - My RACIT</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MyRACIT.styles.css" asp-append-version="true" />
+    <style>
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .user-name {
+            font-weight: 500;
+        }
+        .role-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MyRACIT</a>
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">🎓 My RACIT</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                            
+                            @if (userRole == "Admin")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Index">📊 Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Departments">🏢 Кафедри</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Specialties">🎯 Спеціальності</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Groups">👥 Групи</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Subjects">📚 Предмети</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Students">🎓 Студенти</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Teachers">👨‍🏫 Викладачі</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Courses">📖 Курси</a>
+                                </li>
+                            }
+                            else if (userRole == "Teacher")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Index">📚 Мої курси</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Assignments">📝 Завдання</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Submissions">📬 Здані роботи</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Grades">⭐ Оцінки</a>
+                                </li>
+                            }
+                            else if (userRole == "Student")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Student" asp-action="Index">🏠 Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Student" asp-action="MyCourses">📚 Мої курси</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Student" asp-action="Assignments">📝 Завдання</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" asp-controller="Student" asp-action="MyGrades">⭐ Мої оцінки</a>
+                                </li>
+                            }
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-controller="Home" asp-action="Index">Головна</a>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            var userName = User.Identity.Name;
+                            var userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                            var badgeClass = userRole switch {
+                                "Admin" => "bg-danger",
+                                "Teacher" => "bg-warning text-dark",
+                                "Student" => "bg-info text-dark",
+                                _ => "bg-secondary"
+                            };
+                            
+                            <li class="nav-item d-flex align-items-center me-3">
+                                <div class="user-info text-white">
+                                    <span class="user-name">@userName</span>
+                                    <span class="badge @badgeClass role-badge">@userRole</span>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-light btn-sm">
+                                        🚪 Вийти
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="btn btn-outline-light btn-sm" asp-controller="Auth" asp-action="Login">
+                                    🔑 Увійти
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
+    
     <div class="container">
+        @* Відображення повідомлень *@
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>✅ Успіх!</strong> @TempData["SuccessMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>❌ Помилка!</strong> @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (TempData["InfoMessage"] != null)
+        {
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <strong>ℹ️ Інформація:</strong> @TempData["InfoMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (ViewData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>❌ Помилка!</strong> @ViewData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - MyRACIT - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted mt-5 py-3">
+        <div class="container text-center">
+            &copy; 2026 РФКІТ. Інформаційна система управління навчальним процесом. Всі права захищені.
         </div>
     </footer>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <script>
+        // Auto-hide alerts after 5 seconds
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+    </script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

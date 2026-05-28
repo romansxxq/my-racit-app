@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Створити курс";
+    var subjects = ViewBag.Subjects as IEnumerable<MyRACIT.Models.Entities.Subject>;
+    var groups = ViewBag.Groups as IEnumerable<MyRACIT.Models.Entities.Group>;
+    var teachers = ViewBag.Teachers as IEnumerable<MyRACIT.Models.Entities.TeacherProfile>;
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нового курсу</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateCourse" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label for="SubjectId" class="form-label">Предмет <span class="text-danger">*</span></label>
+                        <select name="SubjectId" class="form-select" required>
+                            <option value="">-- Оберіть предмет --</option>
+                            @if (subjects != null)
+                            {
+                                @foreach (var subject in subjects)
+                                {
+                                    <option value="@subject.Id">@subject.Title</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="GroupId" class="form-label">Група <span class="text-danger">*</span></label>
+                        <select name="GroupId" class="form-select" required>
+                            <option value="">-- Оберіть групу --</option>
+                            @if (groups != null)
+                            {
+                                @foreach (var group in groups)
+                                {
+                                    <option value="@group.Id">@group.Name (@group.Specialty?.Code)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="TeacherId" class="form-label">Викладач <span class="text-danger">*</span></label>
+                        <select name="TeacherId" class="form-select" required>
+                            <option value="">-- Оберіть викладача --</option>
+                            @if (teachers != null)
+                            {
+                                @foreach (var teacher in teachers)
+                                {
+                                    <option value="@teacher.Id">@teacher.User?.Name (@teacher.Department?.Name)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="StartDate" class="form-label">Дата початку <span class="text-danger">*</span></label>
+                            <input type="date" name="StartDate" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="EndDate" class="form-label">Дата закінчення <span class="text-danger">*</span></label>
+                            <input type="date" name="EndDate" class="form-control" required />
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Courses" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

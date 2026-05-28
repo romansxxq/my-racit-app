@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Панель адміністратора";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-success">
+                <h2>🎉 Вітаємо в системі My RACIT!</h2>
+                <p class="lead">Ви успішно увійшли як <strong>@User.Identity?.Name</strong> з роллю <strong>@User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h3>@ViewBag.TotalDepartments</h3>
+                    <p>Кафедри</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h3>@ViewBag.TotalGroups</h3>
+                    <p>Групи</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h3>@ViewBag.TotalTeachers</h3>
+                    <p>Викладачі</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <h3>@ViewBag.TotalStudents</h3>
+                    <p>Студенти</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <h3>Швидкі дії:</h3>
+            <a href="/Admin/Departments" class="btn btn-primary">Управління кафедрами</a>
+            <a href="/Admin/Specialties" class="btn btn-success">Управління спеціальностями</a>
+            <a href="/Admin/Groups" class="btn btn-warning">Управління групами</a>
+            <a href="/Admin/Students" class="btn btn-info">Управління студентами</a>
+            <a href="/Admin/Teachers" class="btn btn-secondary">Управління викладачами</a>
+        </div>
+    </div>
+</div>
