@@ -1,0 +1,88 @@
+@model IEnumerable<MyRACIT.Models.Entities.User>
+
+@{
+    ViewData["Title"] = "Панель адміністратора";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>👤 Панель адміністратора</h1>
+        <p class="lead">Управління користувачами системи MyRACIT</p>
+        <hr />
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Всього користувачів</h5>
+                <h2 class="card-text">@Model.Count()</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">🎓 Студентів</h5>
+                <h2 class="card-text">@Model.Count(u => u.Role == MyRACIT.Models.Entities.UserRole.Student)</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5 class="card-title">📚 Викладачів</h5>
+                <h2 class="card-text">@Model.Count(u => u.Role == MyRACIT.Models.Entities.UserRole.Teacher)</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5 class="card-title">👑 Адміністраторів</h5>
+                <h2 class="card-text">@Model.Count(u => u.Role == MyRACIT.Models.Entities.UserRole.Admin)</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>🚀 Швидкі дії</h4>
+            </div>
+            <div class="card-body">
+                <div class="btn-group" role="group">
+                    <a asp-action="CreateStudent" class="btn btn-success">➕ Додати студента</a>
+                    <a asp-action="CreateTeacher" class="btn btn-info">➕ Додати викладача</a>
+                    <a asp-action="CreateAdmin" class="btn btn-danger">➕ Додати адміністратора</a>
+                </div>
+                <a asp-action="Users" class="btn btn-outline-primary ms-3">📋 Переглянути всіх користувачів</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            <h5>ℹ️ Про Factory Method Pattern</h5>
+            <p>
+                Адміністратор використовує <strong>Factory Method Pattern</strong> для створення користувачів.
+                Фабрика автоматично:
+            </p>
+            <ul>
+                <li>Генерує безпечний пароль для студентів і викладачів</li>
+                <li>Хешує паролі за допомогою SHA256</li>
+                <li>Призначає правильну роль (Student, Teacher, Admin)</li>
+                <li>Надсилає email з обліковими даними (TODO)</li>
+            </ul>
+            <p class="mb-0">
+                <strong>Переваги:</strong> Централізована логіка створення, легко додати нові типи користувачів,
+                дотримання принципу Open-Closed (SOLID).
+            </p>
+        </div>
+    </div>
+</div>

@@ -21,10 +21,42 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Головна</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                👤 Адміністратор
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Index">Панель керування</a></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Users">Користувачі</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="CreateStudent">➕ Додати студента</a></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="CreateTeacher">➕ Додати викладача</a></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="CreateAdmin">➕ Додати адміністратора</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="Admin" asp-action="Statistics">📊 Статистика</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="/admin" target="_blank">🛠️ CoreAdmin (CRUD)</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="teacherDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                📚 Викладач
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="teacherDropdown">
+                                <li><a class="dropdown-item" asp-controller="Teacher" asp-action="Index">Мої курси</a></li>
+                                <li><a class="dropdown-item" asp-controller="Teacher" asp-action="ChangeStrategy">⚙️ Стратегія оцінювання</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" id="studentDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                🎓 Студент
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="studentDropdown">
+                                <li><a class="dropdown-item" asp-controller="Student" asp-action="MyCourses" asp-route-studentId="1">Мої курси</a></li>
+                                <li><a class="dropdown-item" asp-controller="Student" asp-action="AllGrades" asp-route-studentId="1">Мої оцінки</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -33,6 +65,20 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>✅ Успішно!</strong> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>❌ Помилка!</strong> @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

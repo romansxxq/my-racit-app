@@ -1,0 +1,58 @@
+@{
+    ViewData["Title"] = "Створити адміністратора";
+}
+
+<h1>➕ Створити адміністратора</h1>
+<p class="text-muted">Використовується <strong>Factory Method Pattern</strong> для створення користувача</p>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="CreateAdmin" method="post">
+            <div class="mb-3">
+                <label for="name" class="form-label">ПІБ адміністратора</label>
+                <input type="text" class="form-control" id="name" name="name" required 
+                       placeholder="Петров Петро Петрович" />
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required 
+                       placeholder="admin@rfkit.edu.ua" />
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required 
+                       minlength="8" placeholder="Мінімум 8 символів" />
+                <div class="form-text">Для адміністратора пароль вказується вручну</div>
+            </div>
+            
+            <div class="mb-3">
+                <button type="submit" class="btn btn-danger">✅ Створити адміністратора</button>
+                <a asp-action="Users" class="btn btn-secondary">↩️ Назад</a>
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="alert alert-info">
+            <h5>🏭 Factory Method Pattern</h5>
+            <p>Фабрика <code>UserFactory.CreateAdmin()</code> автоматично:</p>
+            <ul>
+                <li>Хешує пароль за допомогою SHA256</li>
+                <li>Призначає роль <code>UserRole.Administrator</code></li>
+                <li>Логує створення користувача</li>
+                <li>Валідує складність пароля</li>
+            </ul>
+            <p class="mb-0">
+                <strong>Переваги:</strong> Централізована логіка створення з можливістю додаткових перевірок для адміністратора.
+            </p>
+        </div>
+        
+        <div class="alert alert-danger">
+            <h5>🔒 Безпека</h5>
+            <p class="mb-0">Адміністраторів може створювати тільки інший адміністратор. В production додати авторизацію!</p>
+        </div>
+    </div>
+</div>

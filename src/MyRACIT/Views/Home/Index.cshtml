@@ -1,8 +1,191 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Головна";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-5">
+    <h1 class="display-4">🎓 MyRACIT</h1>
+    <p class="lead">Інформаційна система управління навчальним процесом РФКІТ</p>
+    <p class="text-muted">ASP.NET MVC + Entity Framework Core + Design Patterns</p>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">👤</div>
+                <h4 class="card-title">Адміністратор</h4>
+                <p class="card-text">Управління користувачами через <strong>Factory Method Pattern</strong></p>
+                <a asp-controller="Admin" asp-action="Index" class="btn btn-primary">Перейти</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">📚</div>
+                <h4 class="card-title">Викладач</h4>
+                <p class="card-text">Виставлення оцінок через <strong>Strategy Pattern</strong></p>
+                <a asp-controller="Teacher" asp-action="Index" class="btn btn-info">Перейти</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3" style="font-size: 3rem;">🎓</div>
+                <h4 class="card-title">Студент</h4>
+                <p class="card-text">Перегляд курсів та оцінок через <strong>Repository Pattern</strong></p>
+                <a asp-controller="Student" asp-action="MyCourses" asp-route-studentId="1" class="btn btn-success">Перейти</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-dark text-white">
+                <h4 class="mb-0">🏗️ Реалізовані патерни проєктування</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5>🏭 Factory Method</h5>
+                        <p><small>Централізоване створення користувачів різних ролей з автоматичною генерацією паролів</small></p>
+                        <ul class="small">
+                            <li>UserFactory.CreateStudent()</li>
+                            <li>UserFactory.CreateTeacher()</li>
+                            <li>UserFactory.CreateAdmin()</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <h5>📦 Repository Pattern</h5>
+                        <p><small>Універсальний Generic репозиторій для всіх Entity з CRUD операціями</small></p>
+                        <ul class="small">
+                            <li>IRepository&lt;T&gt;</li>
+                            <li>Repository&lt;T&gt;</li>
+                            <li>Dependency Injection</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <h5>⚙️ Strategy Pattern</h5>
+                        <p><small>Гнучкі алгоритми обчислення фінальних оцінок студентів</small></p>
+                        <ul class="small">
+                            <li>AverageGradeStrategy</li>
+                            <li>WeightedGradeStrategy</li>
+                            <li>PercentageGradeStrategy</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">🛠️ CoreAdmin - Автоматична адмін-панель</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="lead">Повноцінний CRUD інтерфейс для всіх Entity моделей без написання коду!</p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>✅ Можливості:</h6>
+                                <ul>
+                                    <li>11 таблиць (User, Course, Grade, тощо)</li>
+                                    <li>CRUD операції з усіма Entity</li>
+                                    <li>Grid з пагінацією та сортуванням</li>
+                                    <li>Пошук та фільтрація</li>
+                                    <li>Foreign Key відносини</li>
+                                    <li>Автоматична валідація</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>📦 Інтеграція:</h6>
+                                <ul>
+                                    <li>NuGet: CoreAdmin 4.0.0</li>
+                                    <li>AddCoreAdmin() в Program.cs</li>
+                                    <li>UseCoreAdminCustomUrl("admin")</li>
+                                    <li>Dependency Injection</li>
+                                    <li>Entity Framework Core</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-center">
+                        <div class="p-4">
+                            <div style="font-size: 5rem;">🎛️</div>
+                            <a href="/admin" target="_blank" class="btn btn-primary btn-lg mt-3">
+                                Відкрити CoreAdmin
+                            </a>
+                            <p class="small text-muted mt-2">Управління всіма таблицями БД</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">✅ Виконано</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>UML-діаграми (6 типів)</li>
+                    <li>Entity Framework моделі (11 класів)</li>
+                    <li>Repository Pattern + Generics</li>
+                    <li>Factory Method Pattern</li>
+                    <li>Strategy Pattern (3 стратегії)</li>
+                    <li>Dependency Injection</li>
+                    <li>Web-інтерфейс (MVC)</li>
+                    <li><strong>CoreAdmin - автоматична адмін-панель 🆕</strong></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5 class="mb-0">⏳ Наступні кроки</h5>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>Composite Pattern (ієрархія структури)</li>
+                    <li>Observer Pattern (сповіщення)</li>
+                    <li>Visitor Pattern (обчислення метрик)</li>
+                    <li>Unit-тести (NUnit + Moq)</li>
+                    <li>ASP.NET Identity (авторизація)</li>
+                    <li>Decorator, Facade, Builder</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            <h5>📖 Документація</h5>
+            <p>Проєкт містить повну документацію:</p>
+            <ul class="mb-0">
+                <li><strong>UML-diagrams.md</strong> - Use Case, Class, ER, Sequence, Activity, Component діаграми</li>
+                <li><strong>USE-CASES.md</strong> - 19 детальних сценаріїв використання</li>
+                <li><strong>ARCHITECTURE.md</strong> - Технічна документація та SQL схеми</li>
+                <li><strong>PRACTICE-ROADMAP.md</strong> - План реалізації практики з ООП</li>
+            </ul>
+        </div>
+    </div>
 </div>

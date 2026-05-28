@@ -1,0 +1,84 @@
+@model IEnumerable<MyRACIT.Models.Entities.Grade>
+
+@{
+    ViewData["Title"] = "Мої оцінки";
+    var student = ViewBag.Student as MyRACIT.Models.Entities.StudentProfile;
+    var strategies = ViewBag.Strategies as Dictionary<string, double>;
+}
+
+<h1>🎓 Мої оцінки</h1>
+<p class="lead">Студент: <strong>@student?.User?.Name</strong></p>
+<hr />
+
+@if (strategies != null && strategies.Any())
+{
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">📊 Фінальна оцінка (різні стратегії)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        @foreach (var strategy in strategies)
+                        {
+                            <div class="col-md-4">
+                                <h3 class="text-primary">@strategy.Value.ToString("F2")</h3>
+                                <p class="text-muted">@strategy.Key</p>
+                            </div>
+                        }
+                    </div>
+                    <div class="alert alert-info mb-0 mt-3">
+                        <strong>ℹ️ Strategy Pattern:</strong> Система використовує різні алгоритми для обчислення фінальної оцінки.
+                        Викладач може обрати найбільш підходящу стратегію для курсу.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Завдання</th>
+                <th>Оцінка</th>
+                <th>Дата виставлення</th>
+                <th>Коментар викладача</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grade in Model)
+            {
+                <tr>
+                    <td>@grade.Assignment?.Title</td>
+                    <td>
+                        <span class="badge bg-@(grade.Value >= 4 ? "success" : grade.Value >= 3 ? "warning" : "danger") fs-6">
+                            @grade.Value / @grade.Assignment?.MaxGrade
+                        </span>
+                    </td>
+                    <td>@grade.DateIssued.ToString("dd.MM.yyyy HH:mm")</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(grade.Feedback))
+                        {
+                            <span>@grade.Feedback</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Без коментаря</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>⚠️ Оцінок ще немає</h4>
+        <p class="mb-0">Викладач ще не виставив жодної оцінки за цей курс.</p>
+    </div>
+}

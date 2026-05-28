@@ -1,0 +1,61 @@
+@model IEnumerable<MyRACIT.Models.Entities.Course>
+
+@{
+    ViewData["Title"] = "Мої курси";
+}
+
+<h1>📚 Мої курси</h1>
+<p class="lead">Управління курсами та виставлення оцінок</p>
+<hr />
+
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="alert alert-info">
+            <h5>⚙️ Strategy Pattern для оцінювання</h5>
+            <p class="mb-0">
+                Система використовує <strong>Strategy Pattern</strong> для обчислення фінальних оцінок.
+                Доступні стратегії: <strong>Середній бал</strong>, <strong>Зважений бал</strong>, <strong>Відсотковий бал</strong>.
+                <a asp-action="ChangeStrategy" class="btn btn-sm btn-outline-primary ms-2">Змінити стратегію</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+@if (Model.Any())
+{
+    <div class="row">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">@course.Subject?.Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Група:</strong> @course.Group?.Name</p>
+                        <p><strong>Викладач:</strong> @course.Teacher?.User?.Name</p>
+                        <p>
+                            <strong>Семестр:</strong> 
+                            @course.StartDate.ToString("dd.MM.yyyy") - @course.EndDate.ToString("dd.MM.yyyy")
+                        </p>
+                        <div class="btn-group" role="group">
+                            <a asp-action="Course" asp-route-id="@course.Id" class="btn btn-primary">
+                                📋 Деталі курсу
+                            </a>
+                            <a asp-action="CourseStatistics" asp-route-id="@course.Id" class="btn btn-outline-primary">
+                                📊 Статистика
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <h4>⚠️ Курси не знайдено</h4>
+        <p class="mb-0">За вами ще не закріплено жодного курсу. Зверніться до адміністратора.</p>
+    </div>
+}
