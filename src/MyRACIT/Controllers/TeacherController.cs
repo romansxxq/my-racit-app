@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyRACIT.Data;
 using MyRACIT.Models.Entities;
+using MyRACIT.Services.Interfaces;
 using System.Security.Claims;
 
 namespace MyRACIT.Controllers
@@ -14,10 +15,15 @@ namespace MyRACIT.Controllers
     public class TeacherController : Controller
     {
         private readonly MyRacitDbContext _context;
+        private readonly IFileStorageService _fileStorage;
+
+        private static readonly HashSet<string> AllowedFileExtensions =
+            new(StringComparer.OrdinalIgnoreCase) { ".pdf", ".docx", ".pptx" };
         
-        public TeacherController(MyRacitDbContext context)
+        public TeacherController(MyRacitDbContext context, IFileStorageService fileStorage)
         {
             _context = context;
+            _fileStorage = fileStorage;
         }
         
         // ===== HELPER: Отримання TeacherProfile поточного користувача =====
@@ -32,7 +38,7 @@ namespace MyRACIT.Controllers
                 .FirstOrDefaultAsync(t => t.UserId == userId);
         }
         
-        // ===== UC8: ПЕРЕГЛЯД СВОЇХ КУРСІВ =====
+        //Перегляд своїх курсів
         
         // GET: Teacher/Index або Teacher/MyCourses
         public async Task<IActionResult> Index()
@@ -50,8 +56,50 @@ namespace MyRACIT.Controllers
                 .Where(c => c.TeacherId == teacher.Id)
                 .OrderByDescending(c => c.StartDate)
                 .ToListAsync();
+
+            var assignmentCounts = new Dictionary<int, int>();
+            var submissionCounts = new Dictionary<int, int>();
+            var studentCounts = new Dictionary<int, int>();
+
+            if (courses.Count > 0)
+            {
+                var courseIds = courses.Select(c => c.Id).ToList();
+                var groupIds = courses.Select(c => c.GroupId).Distinct().ToList();
+
+                assignmentCounts = await _context.Assignments
+                    .Where(a => courseIds.Contains(a.CourseId))
+                    .GroupBy(a => a.CourseId)
+                    .Select(g => new { CourseId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.CourseId, x => x.Count);
+
+                submissionCounts = await _context.Submissions
+                    .Join(
+                        _context.Assignments,
+                        s => s.AssignmentId,
+                        a => a.Id,
+                        (s, a) => a.CourseId)
+                    .Where(courseId => courseIds.Contains(courseId))
+                    .GroupBy(courseId => courseId)
+                    .Select(g => new { CourseId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.CourseId, x => x.Count);
+
+                studentCounts = await _context.StudentProfiles
+                    .Where(s => groupIds.Contains(s.GroupId))
+                    .GroupBy(s => s.GroupId)
+                    .Select(g => new { GroupId = g.Key, Count = g.Count() })
+                    .ToDictionaryAsync(x => x.GroupId, x => x.Count);
+            }
+
+            ViewBag.GetCourseAssignments = (Func<int, int>)(courseId =>
+                assignmentCounts.TryGetValue(courseId, out var count) ? count : 0);
+
+            ViewBag.GetCourseSubmissions = (Func<int, int>)(courseId =>
+                submissionCounts.TryGetValue(courseId, out var count) ? count : 0);
+
+            ViewBag.GetStudentsCount = (Func<int, int>)(groupId =>
+                studentCounts.TryGetValue(groupId, out var count) ? count : 0);
             
-            ViewBag.TeacherName = teacher.User!.Name;
+            ViewBag.TeacherName = teacher.User?.Name ?? "Викладач";
             
             return View(courses);
         }
@@ -95,6 +143,46 @@ namespace MyRACIT.Controllers
             return View(course);
         }
         
+        // GET: Teacher/Assignments?courseId=5
+        public async Task<IActionResult> Assignments(int courseId)
+        {
+            var teacher = await GetCurrentTeacherProfileAsync();
+            if (teacher == null)
+                return NotFound("Профіль викладача не знайдено");
+
+            var course = await _context.Courses
+                .Include(c => c.Subject)
+                .Include(c => c.Group)
+                .FirstOrDefaultAsync(c => c.Id == courseId && c.TeacherId == teacher.Id);
+
+            if (course == null)
+                return NotFound("Курс не знайдено або у вас немає доступу");
+
+            var assignments = await _context.Assignments
+                .Where(a => a.CourseId == courseId)
+                .OrderByDescending(a => a.CreatedAt)
+                .ToListAsync();
+
+            var assignmentIds = assignments.Select(a => a.Id).ToList();
+
+            var submissionCounts = await _context.Submissions
+                .Where(s => assignmentIds.Contains(s.AssignmentId))
+                .GroupBy(s => s.AssignmentId)
+                .Select(g => new { AssignmentId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.AssignmentId, x => x.Count);
+
+            var studentCount = await _context.StudentProfiles
+                .CountAsync(s => s.GroupId == course.GroupId);
+
+            ViewBag.CourseId = courseId;
+            ViewBag.CourseName = $"{course.Subject?.Title} ({course.Group?.Name})";
+            ViewBag.GetSubmissionsCount = (Func<int, int>)(assignmentId =>
+                submissionCounts.TryGetValue(assignmentId, out var cnt) ? cnt : 0);
+            ViewBag.GetStudentsCount = (Func<int?, int>)(groupId => studentCount);
+
+            return View(assignments);
+        }
+
         // ===== UC9: СТВОРЕННЯ ЗАВДАННЯ =====
         
         // GET: Teacher/CreateAssignment?courseId=5
@@ -116,7 +204,9 @@ namespace MyRACIT.Controllers
             }
             
             ViewBag.Course = course;
-            
+            ViewBag.CourseId = courseId;
+            ViewBag.CourseName = $"{course.Subject?.Title} ({course.Group?.Name})";
+
             var assignment = new Assignment
             {
                 CourseId = courseId
@@ -128,36 +218,63 @@ namespace MyRACIT.Controllers
         // POST: Teacher/CreateAssignment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateAssignment(Assignment assignment)
+        public async Task<IActionResult> CreateAssignment(Assignment assignment, List<IFormFile>? files)
         {
             var teacher = await GetCurrentTeacherProfileAsync();
             if (teacher == null)
-            {
                 return NotFound("Профіль викладача не знайдено");
-            }
-            
-            // Перевіряємо доступ до курсу
+
             var course = await _context.Courses
+                .Include(c => c.Subject)
+                .Include(c => c.Group)
                 .FirstOrDefaultAsync(c => c.Id == assignment.CourseId && c.TeacherId == teacher.Id);
-            
+
             if (course == null)
-            {
                 return NotFound("Курс не знайдено");
+
+            // Validate uploaded file extensions before ModelState check
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    var ext = Path.GetExtension(file.FileName);
+                    if (!AllowedFileExtensions.Contains(ext))
+                    {
+                        ModelState.AddModelError("files",
+                            $"Недозволений тип файлу '{file.FileName}'. Дозволено: PDF, DOCX, PPTX.");
+                    }
+                }
             }
-            
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Course = await _context.Courses
-                    .Include(c => c.Subject)
-                    .FirstOrDefaultAsync(c => c.Id == assignment.CourseId);
+                ViewBag.Course = course;
+                ViewBag.CourseId = assignment.CourseId;
+                ViewBag.CourseName = $"{course.Subject?.Title} ({course.Group?.Name})";
                 return View(assignment);
             }
-            
+
             assignment.CreatedAt = DateTime.Now;
-            
             _context.Assignments.Add(assignment);
             await _context.SaveChangesAsync();
-            
+
+            // Save attached files
+            if (files != null && files.Count > 0)
+            {
+                foreach (var file in files)
+                {
+                    var savedPath = await _fileStorage.SaveFileAsync(file, "assignments");
+                    _context.AssignmentFiles.Add(new AssignmentFile
+                    {
+                        AssignmentId = assignment.Id,
+                        FilePath = savedPath,
+                        FileName = file.FileName,
+                        UploadedAt = DateTime.UtcNow
+                    });
+                }
+                await _context.SaveChangesAsync();
+            }
+
             TempData["Success"] = $"Завдання '{assignment.Title}' успішно створено!";
             return RedirectToAction(nameof(AssignmentDetails), new { id = assignment.Id });
         }
@@ -265,7 +382,7 @@ namespace MyRACIT.Controllers
             
             // Подані роботи
             var submissions = await _context.Submissions
-                .Include(s => s.StudentProfile)
+                .Include(s => s.Student)
                     .ThenInclude(sp => sp!.User)
                 .Include(s => s.Grade)
                 .Where(s => s.AssignmentId == id)
@@ -345,7 +462,7 @@ namespace MyRACIT.Controllers
             }
             
             var submissions = await _context.Submissions
-                .Include(s => s.StudentProfile)
+                .Include(s => s.Student)
                     .ThenInclude(sp => sp!.User)
                 .Include(s => s.Grade)
                 .Where(s => s.AssignmentId == assignmentId)
@@ -369,7 +486,7 @@ namespace MyRACIT.Controllers
             var submission = await _context.Submissions
                 .Include(s => s.Assignment)
                     .ThenInclude(a => a!.Course)
-                .Include(s => s.StudentProfile)
+                .Include(s => s.Student)
                     .ThenInclude(sp => sp!.User)
                 .Include(s => s.Grade)
                 .FirstOrDefaultAsync(s => s.Id == id);
@@ -396,7 +513,7 @@ namespace MyRACIT.Controllers
             var submission = await _context.Submissions
                 .Include(s => s.Assignment)
                     .ThenInclude(a => a!.Course)
-                .Include(s => s.StudentProfile)
+                .Include(s => s.Student)
                     .ThenInclude(sp => sp!.User)
                 .Include(s => s.Grade)
                 .FirstOrDefaultAsync(s => s.Id == id);
@@ -409,7 +526,7 @@ namespace MyRACIT.Controllers
             var grade = submission.Grade ?? new Grade
             {
                 SubmissionId = submission.Id,
-                StudentProfileId = submission.StudentProfileId
+                GradedBy = teacher.Id
             };
             
             ViewBag.Submission = submission;
@@ -451,7 +568,7 @@ namespace MyRACIT.Controllers
             {
                 ViewBag.Submission = await _context.Submissions
                     .Include(s => s.Assignment)
-                    .Include(s => s.StudentProfile)
+                    .Include(s => s.Student)
                         .ThenInclude(sp => sp!.User)
                     .FirstOrDefaultAsync(s => s.Id == grade.SubmissionId);
                 ViewBag.MaxPoints = submission.Assignment.MaxPoints;
@@ -459,11 +576,11 @@ namespace MyRACIT.Controllers
             }
             
             grade.GradedAt = DateTime.Now;
+            grade.GradedBy = teacher.Id;
             
             if (submission.Grade == null)
             {
                 // Створюємо нову оцінку
-                grade.StudentProfileId = submission.StudentProfileId;
                 _context.Grades.Add(grade);
             }
             else
@@ -472,6 +589,7 @@ namespace MyRACIT.Controllers
                 submission.Grade.Points = grade.Points;
                 submission.Grade.Feedback = grade.Feedback;
                 submission.Grade.GradedAt = grade.GradedAt;
+                submission.Grade.GradedBy = teacher.Id;
             }
             
             await _context.SaveChangesAsync();
@@ -511,7 +629,7 @@ namespace MyRACIT.Controllers
             // Завдання курсу
             var assignments = await _context.Assignments
                 .Where(a => a.CourseId == courseId)
-                .OrderBy(a => a.DueDate)
+                .OrderBy(a => a.Deadline)
                 .ToListAsync();
             
             // Оцінки студентів
@@ -558,21 +676,24 @@ namespace MyRACIT.Controllers
             }
             
             // Завдання та оцінки студента
-            var assignments = await _context.Assignments
+            var assignmentList = await _context.Assignments
                 .Where(a => a.CourseId == courseId)
-                .OrderBy(a => a.DueDate)
-                .Select(a => new
-                {
-                    Assignment = a,
-                    Submission = _context.Submissions
-                        .Include(s => s.Grade)
-                        .FirstOrDefault(s => s.AssignmentId == a.Id && s.StudentProfileId == studentId)
-                })
+                .OrderBy(a => a.Deadline)
                 .ToListAsync();
-            
+
+            var aIds = assignmentList.Select(a => a.Id).ToList();
+            var subsByAssignment = await _context.Submissions
+                .Include(s => s.Grade)
+                .Where(s => s.StudentId == studentId && aIds.Contains(s.AssignmentId))
+                .ToDictionaryAsync(s => s.AssignmentId);
+
             ViewBag.Course = course;
             ViewBag.Student = student;
-            ViewBag.Assignments = assignments;
+            ViewBag.Assignments = assignmentList.Select(a => new
+            {
+                Assignment = a,
+                Submission = subsByAssignment.TryGetValue(a.Id, out var sub) ? sub : (Submission?)null
+            }).ToList();
             
             return View();
         }
