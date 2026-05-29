@@ -4,6 +4,8 @@
     ViewData["Title"] = "Управління завданнями";
     var courseId = ViewBag.CourseId as int?;
     var courseName = ViewBag.CourseName as string;
+    var getSubmissionsCount = ViewBag.GetSubmissionsCount as Func<int, int> ?? (_ => 0);
+    var getStudentsCount = ViewBag.GetStudentsCount as Func<int?, int> ?? (_ => 0);
 }
 
 <div class="row mb-3">
@@ -59,7 +61,7 @@ else
                             </div>
                             <div class="col-md-4 text-end">
                                 <div class="mb-2">
-                                    <h4>@ViewBag.GetSubmissionsCount(assignment.Id) / @ViewBag.GetStudentsCount(assignment.Course?.GroupId)</h4>
+                                    <h4>@getSubmissionsCount(assignment.Id) / @getStudentsCount(assignment.Course?.GroupId)</h4>
                                     <small class="text-muted">Здано робіт</small>
                                 </div>
                                 <div class="btn-group" role="group">

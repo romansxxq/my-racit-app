@@ -28,10 +28,9 @@
                 
                 <form asp-action="EditGrade" method="post">
                     <input type="hidden" asp-for="Id" />
-                    <input type="hidden" asp-for="StudentProfileId" />
-                    <input type="hidden" asp-for="CourseId" />
                     <input type="hidden" asp-for="SubmissionId" />
                     <input type="hidden" asp-for="DateIssued" />
+                    <input type="hidden" asp-for="GradedBy" />
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
                     
                     <div class="mb-3">
