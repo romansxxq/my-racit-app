@@ -1,4 +1,5 @@
 using MyRACIT.Models.Entities;
+using MyRACIT.Models.Exceptions;
 using MyRACIT.Services;
 using MyRACIT.Tests.Helpers;
 
@@ -32,7 +33,7 @@ public class UserService_CreateAdminTests
         await svc.CreateAdminAsync("Перший", "dup@test.com", "pass");
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(
+        await Assert.ThrowsAsync<UserAlreadyExistsException>(
             () => svc.CreateAdminAsync("Другий", "dup@test.com", "pass2"));
     }
 }
