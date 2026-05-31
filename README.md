@@ -1,96 +1,64 @@
 # MyRACIT 🎓
 
-**My**RACIT - Інформаційна система управління навчальним процесом закладу передвищої освіти **РФКІТ** (Рівненський фаховий коледж інформаційних технологій).
+**My**RACIT — веб-система управління навчальним процесом закладу передвищої освіти **РФКІТ** (Рівненський фаховий коледж інформаційних технологій).
 
 [![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-11.0-blue)](https://dotnet.microsoft.com/)
-[![Entity Framework](https://img.shields.io/badge/EF%20Core-Latest-purple)](https://docs.microsoft.com/ef/)
-[![SQL Server](https://img.shields.io/badge/SQL%20Server-2019+-red)](https://www.microsoft.com/sql-server)
+[![EF Core](https://img.shields.io/badge/EF%20Core-10.0-purple)](https://docs.microsoft.com/ef/)
+[![SQL Server](https://img.shields.io/badge/SQL%20Server-Express-red)](https://www.microsoft.com/sql-server)
+[![xUnit](https://img.shields.io/badge/Tests-25%20passed-brightgreen)](https://xunit.net/)
 
 ---
 
 ## 📋 Опис проєкту
 
-**Тема:** Інформаційна система управління навчальним процесом закладу передвищої освіти РФКІТ
+**Предметна область:** Адміністрування та організація навчання у закладі передвищої освіти РФКІТ. Система координує взаємодію між адміністрацією, викладачами та студентами — від реєстрації користувачів і розподілу по групах до створення завдань, подання робіт і виставлення оцінок.
 
-**Предметна область:** Процес адміністрування та організації навчання у закладі передвищої освіти РФКІТ. Система координує взаємодію між адміністрацією, викладачами та студентами, керує розподілом по групах/спеціальностях та реєстрацією на навчальні семестрові курси.
-
-### 🎯 Мета розробки MyRACIT
-Створити веб-платформу, яка автоматизує рутинні процеси обліку студентів, формування академічних груп та запису на дисципліни, забезпечуючи зручний єдиний механізм авторизації
+### 🎯 Мета
+Автоматизувати рутинні процеси обліку студентів, формування академічних груп, запису на курси та оцінювання — через єдину захищену веб-платформу з розмежуванням ролей.
 
 ---
 
 ## 👥 Актори системи
 
 ### 🔴 Адміністратор
-Керує глобальними довідниками, реєструє нові групи та дисципліни, створює облікові записи для студентів та викладачів.
+Керує глобальними довідниками, реєструє нові групи та дисципліни, створює облікові записи для студентів і викладачів.
 
 **Функції:**
-- Управління кафедрами та спеціальностями
-- Створення та редагування груп
+- Управління кафедрами, спеціальностями та групами
 - Реєстрація користувачів (студентів і викладачів)
 - Створення курсів та призначення викладачів
-- Повний доступ до всіх даних системи
+- Деактивація облікових записів
 
 ### 🔵 Викладач
-Веде закріплені за ним поточні курси, переглядає списки студентів, виставляє оцінки.
+Веде закріплені курси, переглядає подані роботи, виставляє оцінки.
 
 **Функції:**
-- Перегляд закріплених курсів
-- Створення завдань для курсів
-- Перегляд поданих робіт студентів
-- Виставлення оцінок
-- Надання зворотного зв'язку студентам
+- Перегляд своїх курсів та списків студентів
+- Створення завдань (текст, файли, посилання, дедлайн, макс. бал)
+- Перегляд та оцінювання поданих робіт студентів
 
 ### 🟢 Студент
-Заповнює свій профіль, переглядає курси, на які він записаний, та бачить свої оцінки.
+Переглядає свої курси, подає виконані роботи, стежить за оцінками.
 
 **Функції:**
-- Перегляд своїх курсів
-- Перегляд завдань та дедлайнів
-- Подання виконаних робіт
-- Перегляд оцінок та коментарів викладачів
+- Перегляд активних курсів та завдань
+- Подання виконаних робіт (текст або файл)
+- Перегляд оцінок та коментарів викладача
 - Редагування особистого профілю
 
 ---
 
 ## 🛠 Технологічний стек
 
-- **Backend:** ASP.NET Core MVC (.NET 11.0)
-- **ORM:** Entity Framework Core
-- **Database:** Microsoft SQL Server (LocalDB для розробки)
-- **Admin Panel:** CoreAdmin
-- **Frontend:** Razor Views, Bootstrap 5, jQuery
-- **Authentication:** ASP.NET Core Identity (планується)
-
----
-
-## 📚 Документація
-
-### UML-діаграми
-📄 [UML-diagrams.md](UML-diagrams.md) - Повний набір UML-діаграм:
-- **Use Case діаграма** - Актори та сценарії використання
-- **Class діаграма** - Структура класів системи
-- **ER-діаграма** - Зв'язки між сутностями бази даних
-- **Sequence діаграма** - Процес виставлення оцінки
-- **Activity діаграма** - Реєстрація студента на курс
-- **Component діаграма** - Архітектура системи
-
-### Сценарії використання
-📄 [USE-CASES.md](USE-CASES.md) - Детальний опис всіх Use Cases:
-- 19 детально описаних сценаріїв використання
-- Основні та альтернативні потоки
-- Матриця відповідальності (RACI)
-- Пріоритети реалізації по фазам
-
-### Технічна документація
-📄 [ARCHITECTURE.md](ARCHITECTURE.md) - Технічна архітектура проєкту:
-- Структура бази даних з SQL-схемами
-- Бізнес-логіка та сервіси
-- Правила безпеки та авторизації
-- Оптимізація продуктивності
-- Patterns та best practices
-- API Endpoints
-- Deployment інструкції
+| Шар | Технологія |
+|-----|-----------|
+| Backend | ASP.NET Core MVC (.NET 11.0-preview) |
+| ORM | Entity Framework Core 10.0 |
+| База даних | Microsoft SQL Server Express |
+| Автентифікація | Cookie Authentication (власна реалізація) |
+| Frontend | Razor Views, Bootstrap 5, jQuery |
+| Тестування | xUnit 2.9.3, Moq, EF Core InMemory |
+| CI | GitHub Actions |
 
 ---
 
@@ -99,43 +67,41 @@
 ```
 my-racit-app/
 ├── src/
-│   └── MyRACIT/                    # Головний проєкт
+│   └── MyRACIT/
 │       ├── Controllers/            # MVC контролери
-│       │   └── HomeController.cs
-│       ├── Data/                   # DbContext
-│       │   └── MyRacitDbContext.cs
+│       │   ├── AdminController.cs  # Управління довідниками, реєстрація
+│       │   ├── AuthController.cs   # Вхід / вихід
+│       │   ├── StudentController.cs
+│       │   └── TeacherController.cs
+│       ├── Data/
+│       │   ├── MyRacitDbContext.cs
+│       │   └── DataSeeder.cs       # Початкове наповнення тестовими даними
 │       ├── Migrations/             # EF Core міграції
-│       ├── Models/                 # Моделі даних
-│       │   ├── ErrorViewModel.cs
-│       │   └── Entities/           # Entity класи
-│       │       ├── User.cs
-│       │       ├── StudentProfile.cs
-│       │       ├── TeacherProfile.cs
-│       │       ├── Department.cs
-│       │       ├── Specialty.cs
-│       │       ├── Group.cs
-│       │       ├── Subject.cs
-│       │       ├── Course.cs
-│       │       ├── Assignment.cs
-│       │       ├── Submission.cs
-│       │       ├── Grade.cs
-│       │       └── UserRole.cs
-│       ├── Views/                  # Razor Views
-│       │   ├── Home/
-│       │   └── Shared/
-│       ├── wwwroot/                # Статичні файли
-│       │   ├── css/
-│       │   ├── js/
-│       │   └── lib/
-│       ├── appsettings.json
-│       ├── Program.cs
-│       └── MyRACIT.csproj
+│       ├── Models/
+│       │   ├── Entities/           # Assignment, Course, Grade, Group, ...
+│       │   ├── DTOs/               # UserDtos
+│       │   └── Exceptions/         # RacitException ієрархія
+│       ├── Services/
+│       │   ├── UserService.cs      # Бізнес-логіка користувачів
+│       │   ├── FileStorageService.cs
+│       │   └── Interfaces/
+│       ├── Views/                  # Razor Views (Admin/Auth/Student/Teacher)
+│       └── wwwroot/
 ├── tests/
-│   └── MyRACIT.Tests/              # Unit тести
-├── UML-diagrams.md                 # UML-діаграми
-├── USE-CASES.md                    # Сценарії використання
-├── ARCHITECTURE.md                 # Технічна документація
-└── README.md                       # Цей файл
+│   └── MyRACIT.Tests/
+│       ├── Helpers/DbFactory.cs
+│       ├── UserService_AuthenticateTests.cs    # 4 тести
+│       ├── UserService_ChangePasswordTests.cs  # 3 тести
+│       ├── UserService_CreateAdminTests.cs     # 3 тести
+│       ├── UserService_CreateStudentTests.cs   # 3 тести
+│       ├── UserService_CreateTeacherTests.cs   # 3 тести
+│       ├── UserService_EmailExistsTests.cs     # 2 тести
+│       ├── UserService_GetUserTests.cs         # 4 тести
+│       └── UserService_UpdateProfileTests.cs   # 4 тести
+├── UML-diagrams.md
+├── USE-CASES.md
+├── ARCHITECTURE.md
+└── README.md
 ```
 
 ---
@@ -143,9 +109,9 @@ my-racit-app/
 ## 🚀 Швидкий старт
 
 ### Вимоги
-- [.NET 11.0 SDK](https://dotnet.microsoft.com/download)
-- [SQL Server](https://www.microsoft.com/sql-server) або SQL Server LocalDB
-- [Visual Studio 2024](https://visualstudio.microsoft.com/) або [VS Code](https://code.visualstudio.com/)
+- [.NET 11.0 SDK (preview)](https://dotnet.microsoft.com/download)
+- Microsoft SQL Server Express
+- Visual Studio 2022+ або VS Code
 
 ### Установка
 
@@ -155,112 +121,85 @@ my-racit-app/
    cd my-racit-app
    ```
 
-2. **Відновити пакети**
-   ```bash
-   cd src/MyRACIT
-   dotnet restore
-   ```
+2. **Налаштувати рядок підключення**
 
-3. **Оновити connection string**
-   
-   Відредагуйте `appsettings.json`:
+   Відредагуйте `src/MyRACIT/appsettings.json`:
    ```json
    "ConnectionStrings": {
-     "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=MyRacitDb;Trusted_Connection=True;"
+     "DefaultConnection": "Server=YOUR_SERVER\\SQLEXPRESS;Database=myracitdb;Trusted_Connection=True;TrustServerCertificate=True;"
    }
    ```
 
-4. **Застосувати міграції**
+3. **Застосувати міграції**
    ```bash
+   cd src/MyRACIT
    dotnet ef database update
    ```
 
-5. **Запустити проєкт**
+4. **Запустити проєкт**
    ```bash
    dotnet run
    ```
+   Застосунок підніметься на `http://localhost:5240`.  
+   При першому запуску `DataSeeder` автоматично наповнить базу тестовими даними.
 
-6. **Відкрити в браузері**
-   ```
-   https://localhost:5001
-   ```
+---
+
+## � Архітектура та патерни
+
+### MVC + Service Layer
+Проєкт реалізує класичний **MVC** з виділеним сервісним шаром:
+- **Controllers** — приймають HTTP-запити, делегують логіку сервісам, передають дані до View
+- **Services** (`IUserService`, `IFileStorageService`) — вся бізнес-логіка, ізольована від контролерів
+- **Entities** — POCO-класи, відображені на таблиці через EF Core
+
+### Патерни
+| Патерн | Де використовується |
+|--------|-------------------|
+| Repository (через EF Core DbContext) | `MyRacitDbContext` — єдина точка доступу до БД |
+| Dependency Injection | Всі сервіси реєструються у `Program.cs`, впроваджуються через конструктор |
+| DTO | `UserDtos` — передача даних між шарами без прямого використання Entity |
+| Custom Exception Hierarchy | `RacitException` → `UserAlreadyExistsException` / `GroupNotFoundException` / `DepartmentNotFoundException` |
+| Cookie Authentication | Власна реалізація входу/виходу через `CookieAuthenticationDefaults` |
+
+### Безпека
+- Паролі хешуються через `BCrypt` (без збереження plain-text)
+- Захист маршрутів через `[Authorize]` / `[Authorize(Policy = ...)]`
+- Cookie: `HttpOnly`, `SameSite=Lax`, TTL 8 годин
 
 ---
 
 ## 📊 Модель даних
 
-### Основні сутності
-
 | Сутність | Опис |
 |----------|------|
-| **User** | Базова інформація про користувача (Admin/Teacher/Student) |
-| **StudentProfile** | Розширений профіль студента з прив'язкою до групи |
-| **TeacherProfile** | Розширений профіль викладача з прив'язкою до кафедри |
-| **Department** | Кафедри закладу |
-| **Specialty** | Спеціальності (належать до кафедр) |
-| **Group** | Академічні групи (належать до спеціальностей) |
-| **Subject** | Дисципліни (викладаються кафедрами) |
-| **Course** | Курс = Subject + Teacher + Group + Semester |
-| **Assignment** | Завдання створені викладачем для курсу |
-| **Submission** | Роботи подані студентами |
-| **Grade** | Оцінки виставлені викладачем |
+| `User` | Базовий обліковий запис (роль: Admin/Teacher/Student, хеш пароля) |
+| `StudentProfile` | Профіль студента → `Group` |
+| `TeacherProfile` | Профіль викладача → `Department` |
+| `Department` | Кафедра |
+| `Specialty` | Спеціальність → `Department` |
+| `Group` | Академічна група → `Specialty` |
+| `Subject` | Навчальна дисципліна → `Department` |
+| `Course` | Subject + TeacherProfile + Group + Semester |
+| `Assignment` | Завдання → `Course` (текст, файли, посилання, дедлайн, MaxGrade) |
+| `Submission` | Відповідь студента → `Assignment` (текст або файл) |
+| `Grade` | Оцінка → `Submission` (числовий бал + коментар) |
 
-Детальні схеми та зв'язки дивіться в [ARCHITECTURE.md](ARCHITECTURE.md).
+Детальні схеми: [ARCHITECTURE.md](ARCHITECTURE.md) · [UML-diagrams.md](UML-diagrams.md)
 
 ---
 
-## 🔐 Авторизація та ролі
-
-### Ролі користувачів (UserRole enum)
-```csharp
-public enum UserRole
-{
-    Admin = 0,      // Адміністратор
-    Teacher = 1,    // Викладач
-    Student = 2     // Студент
-}
-```
-
-### Матриця доступу
+## 🔐 Матриця доступу
 
 | Функція | Admin | Teacher | Student |
-|---------|-------|---------|---------|
-| Керування довідниками | ✅ | ❌ | ❌ |
-| Створення користувачів | ✅ | ❌ | ❌ |
+|---------|:-----:|:-------:|:-------:|
+| Управління довідниками | ✅ | ❌ | ❌ |
+| Реєстрація користувачів | ✅ | ❌ | ❌ |
 | Створення курсів | ✅ | ❌ | ❌ |
 | Створення завдань | ❌ | ✅ (свої курси) | ❌ |
-| Виставлення оцінок | ❌ | ✅ (свої курси) | ❌ |
+| Оцінювання робіт | ❌ | ✅ (свої курси) | ❌ |
 | Подання робіт | ❌ | ❌ | ✅ (свої курси) |
-| Перегляд всіх оцінок | ✅ | ✅ (свої курси) | ✅ (лише своїх) |
-
----
-
-## 📝 Entity Framework Міграції
-
-### Основні команди
-
-```bash
-# Створити нову міграцію
-dotnet ef migrations add MigrationName
-
-# Застосувати міграції до бази
-dotnet ef database update
-
-# Відкотити до попередньої міграції
-dotnet ef database update PreviousMigrationName
-
-# Видалити останню міграцію (якщо не застосована)
-dotnet ef migrations remove
-
-# Генерація SQL скрипту
-dotnet ef migrations script
-
-# Видалення бази даних
-dotnet ef database drop
-```
-
-### Історія міграцій
-- `20260527135425_InitialMigration` - Початкова структура БД ✅
+| Перегляд оцінок | ✅ | ✅ (свої курси) | ✅ (лише своїх) |
 
 ---
 
@@ -268,102 +207,57 @@ dotnet ef database drop
 
 ```bash
 # Запустити всі тести
-cd tests/MyRACIT.Tests
-dotnet test
+dotnet test tests/MyRACIT.Tests
 
-# Запустити з покриттям коду
-dotnet test /p:CollectCoverage=true
+# Зібрати покриття
+dotnet test tests/MyRACIT.Tests /p:CollectCoverage=true /p:CoverletOutputFormat=lcov
+
+# HTML-звіт (потрібен reportgenerator)
+dotnet reportgenerator -reports:"coverage.info" -targetdir:"coverage-report" -reporttypes:Html
 ```
 
----
-
-## 🗺 Roadmap
-
-### ✅ Фаза 1: Фундамент (Поточна)
-- [x] Створення моделей Entity
-- [x] Налаштування DbContext
-- [x] Початкова міграція
-- [x] Базова структура MVC
-- [x] UML-діаграми
-- [x] Документація Use Cases
-
-### 🔄 Фаза 2: Основний функціонал
-- [ ] Імплементація ASP.NET Identity
-- [ ] CRUD операції для всіх сутностей
-- [ ] Панелі адміністратора (CoreAdmin)
-- [ ] Інтерфейс викладача
-- [ ] Інтерфейс студента
-
-### ⏳ Фаза 3: Навчальний процес
-- [ ] Система завдань та подань
-- [ ] Виставлення оцінок
-- [ ] Зворотний зв'язок
-- [ ] Календар та дедлайни
-- [ ] Email нотифікації
-
-### 📅 Фаза 4: Аналітика та звіти
-- [ ] Dashboard з статистикою
-- [ ] Графіки успішності
-- [ ] Експорт у Excel/PDF
-- [ ] Журнал відвідувань
-- [ ] Генерація звітів
-
-### 🚀 Фаза 5: Розширений функціонал
-- [ ] REST API
-- [ ] Mobile-friendly версія
-- [ ] Інтеграція з зовнішніми системами
-- [ ] Онлайн чат підтримки
-- [ ] Багатомовність (UA/EN)
+### Поточний стан тестів
+- **25 unit-тестів**, всі проходять
+- Покриття `UserService`: **~88%**
+- Тести перевіряють: автентифікацію, реєстрацію (Admin/Teacher/Student), зміну пароля, оновлення профілю, кастомні виключення
 
 ---
 
-## 🤝 Внесок у проєкт
+## 📄 Документація
 
-Ми раді будь-якому внеску! Якщо ви хочете допомогти:
-
-1. Fork репозиторій
-2. Створіть feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit зміни (`git commit -m 'Add some AmazingFeature'`)
-4. Push в branch (`git push origin feature/AmazingFeature`)
-5. Відкрийте Pull Request
-
-### Coding Standards
-- Використовуйте C# naming conventions
-- Додавайте XML коментарі до публічних методів
-- Пишіть unit тести для нового функціоналу
-- Слідуйте SOLID принципам
+| Файл | Зміст |
+|------|-------|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | Технічна архітектура, схема БД, сервіси |
+| [UML-diagrams.md](UML-diagrams.md) | Use Case, Class, ER, Sequence, Activity, Component діаграми |
+| [USE-CASES.md](USE-CASES.md) | 19 детальних сценаріїв використання з альтернативними потоками |
+| [PROGRESS_STATUS.md](PROGRESS_STATUS.md) | Поточний статус реалізації функціоналу |
 
 ---
 
-## 📄 Ліцензія
+## 📝 EF Core — корисні команди
 
-Цей проєкт ліцензовано під MIT License - дивіться файл [LICENSE](LICENSE) для деталей.
+```bash
+# Нова міграція
+dotnet ef migrations add MigrationName --project src/MyRACIT
 
----
+# Застосувати до БД
+dotnet ef database update --project src/MyRACIT
 
-## 👨‍💻 Автори
+# Відкотити
+dotnet ef database update PreviousMigrationName --project src/MyRACIT
+```
 
-- **Ваше ім'я** - *Початкова робота* - [YourGitHub](https://github.com/yourusername)
-
----
-
-## 🙏 Подяки
-
-- [ASP.NET Core Documentation](https://docs.microsoft.com/aspnet/core/)
-- [Entity Framework Core](https://docs.microsoft.com/ef/core/)
-- [CoreAdmin Library](https://github.com/edandersen/core-admin)
-- [Bootstrap](https://getbootstrap.com/)
-
----
-
-## 📞 Контакти
-
-**Email:** support@myracit.com  
-**GitHub Issues:** [https://github.com/yourusername/my-racit-app/issues](https://github.com/yourusername/my-racit-app/issues)  
-**Documentation:** [https://docs.myracit.com](https://docs.myracit.com)
+### Міграції проєкту
+| Міграція | Зміни |
+|----------|-------|
+| `20260527_InitialMigration` | Початкова структура БД |
+| `20260528_UpdateGradeAndAddAssignmentResources` | Ресурси завдань, оновлення Grade |
+| `20260528_AddSubmissionGradeNavigation` | Навігаційна властивість Submission→Grade |
+| `20260529_FixGradeSubmissionRelationship` | Виправлення зв'язку Grade↔Submission |
+| `20260529_AddSubmissionContent` | Поле Content у Submission |
 
 ---
 
-<div align="center">
-  <strong>Зроблено з ❤️ для РФКІТ</strong>
-</div>
+## 👨‍💻 Автор
+
+- **Матвійчук Роман**
