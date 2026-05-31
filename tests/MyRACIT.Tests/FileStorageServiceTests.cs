@@ -26,8 +26,6 @@ public class FileStorageServiceTests : IDisposable
             Directory.Delete(_tempRoot, recursive: true);
     }
 
-    // ---- helpers ----
-
     private static IFormFile MakeFile(string name, long length)
     {
         var mock = new Mock<IFormFile>();
@@ -37,8 +35,6 @@ public class FileStorageServiceTests : IDisposable
             .Returns(Task.CompletedTask);
         return mock.Object;
     }
-
-    // ---- SaveFileAsync ----
 
     [Fact]
     public async Task SaveFileAsync_ValidFile_ReturnsRelativePath()
@@ -70,16 +66,12 @@ public class FileStorageServiceTests : IDisposable
             _svc.SaveFileAsync(MakeFile("big.pdf", 11 * 1024 * 1024), "x"));
     }
 
-    // ---- GetFileAsync ----
-
     [Fact]
     public async Task GetFileAsync_NonExistingFile_ThrowsFileNotFoundException()
     {
         await Assert.ThrowsAsync<FileNotFoundException>(() =>
             _svc.GetFileAsync("uploads/ghost.pdf"));
     }
-
-    // ---- DeleteFileAsync ----
 
     [Fact]
     public async Task DeleteFileAsync_ExistingFile_RemovesFile()
@@ -93,8 +85,6 @@ public class FileStorageServiceTests : IDisposable
 
         Assert.False(File.Exists(filePath));
     }
-
-    // ---- FileExists ----
 
     [Fact]
     public void FileExists_ExistingFile_ReturnsTrue()
@@ -112,8 +102,6 @@ public class FileStorageServiceTests : IDisposable
         Assert.False(_svc.FileExists("uploads/doesnotexist.txt"));
     }
 
-    // ---- GetFileSize ----
-
     [Fact]
     public void GetFileSize_ExistingFile_ReturnsPositiveSize()
     {
@@ -129,8 +117,6 @@ public class FileStorageServiceTests : IDisposable
     {
         Assert.Equal(-1, _svc.GetFileSize("uploads/ghost.txt"));
     }
-
-    // ---- GetContentType ----
 
     [Theory]
     [InlineData("doc.pdf", "application/pdf")]

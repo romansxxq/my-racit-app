@@ -67,7 +67,7 @@ namespace MyRACIT.Services
         /// </summary>
         public async Task<byte[]> GetFileAsync(string filePath)
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace("/", "\\"));
+            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar));
             
             if (!File.Exists(fullPath))
             {
@@ -82,7 +82,7 @@ namespace MyRACIT.Services
         /// </summary>
         public Task DeleteFileAsync(string filePath)
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace("/", "\\"));
+            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar));
             
             if (File.Exists(fullPath))
             {
@@ -97,7 +97,7 @@ namespace MyRACIT.Services
         /// </summary>
         public bool FileExists(string filePath)
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace("/", "\\"));
+            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar));
             return File.Exists(fullPath);
         }
         
@@ -106,7 +106,7 @@ namespace MyRACIT.Services
         /// </summary>
         public long GetFileSize(string filePath)
         {
-            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace("/", "\\"));
+            var fullPath = Path.Combine(_environment.WebRootPath, filePath.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar));
             
             if (!File.Exists(fullPath))
             {
