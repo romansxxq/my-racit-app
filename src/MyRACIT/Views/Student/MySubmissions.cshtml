@@ -67,7 +67,7 @@ else
                             <td>
                                 @if (hasGrade)
                                 {
-                                    var percentage = (double)submission.Grade.Value / submission.Assignment?.MaxGrade * 100;
+                                    var percentage = (double)submission.Grade!.Value / (submission.Assignment?.MaxGrade ?? 1) * 100;
                                     var badgeClass = percentage >= 75 ? "bg-success" : percentage >= 50 ? "bg-warning" : "bg-danger";
                                     <span class="badge @badgeClass">
                                         @submission.Grade.Value / @submission.Assignment?.MaxGrade

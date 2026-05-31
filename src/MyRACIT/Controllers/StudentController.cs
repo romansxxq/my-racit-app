@@ -53,11 +53,11 @@ namespace MyRACIT.Controllers
             
             var totalGrades = await _context.Grades
                 .Include(g => g.Submission)
-                .CountAsync(g => g.Submission.StudentId == student.Id);
+                .CountAsync(g => g.Submission!.StudentId == student.Id);
             
             var averageGrade = await _context.Grades
                 .Include(g => g.Submission)
-                .Where(g => g.Submission.StudentId == student.Id)
+                .Where(g => g.Submission!.StudentId == student.Id)
                 .AverageAsync(g => (double?)g.Value) ?? 0;
             
             ViewBag.TotalCourses = totalCourses;
@@ -497,7 +497,7 @@ namespace MyRACIT.Controllers
                     .ThenInclude(s => s!.Assignment)
                         .ThenInclude(a => a!.Course)
                             .ThenInclude(c => c!.Subject)
-                .Where(g => g.Submission.StudentId == student.Id)
+                .Where(g => g.Submission!.StudentId == student.Id)
                 .OrderByDescending(g => g.DateIssued)
                 .ToListAsync();
             

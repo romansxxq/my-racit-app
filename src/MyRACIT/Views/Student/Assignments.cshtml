@@ -32,7 +32,7 @@ else
         @foreach (var assignment in Model)
         {
             var hasSubmission = mySubmissions != null && mySubmissions.ContainsKey(assignment.Id);
-            var mySubmission = hasSubmission ? mySubmissions[assignment.Id] : null;
+            var mySubmission = hasSubmission ? mySubmissions![assignment.Id] : null;
             var isGraded = hasSubmission && mySubmission?.Grade != null;
             var isOverdue = assignment.Deadline < DateTime.Now;
             var canSubmit = !hasSubmission && !isOverdue;
@@ -73,7 +73,7 @@ else
                                 
                                 @if (isGraded)
                                 {
-                                    var grade = mySubmission.Grade;
+                                    var grade = mySubmission!.Grade!;
                                     var percentage = (double)grade.Value / assignment.MaxGrade * 100;
                                     var badgeClass = percentage >= 75 ? "bg-success" : percentage >= 50 ? "bg-warning" : "bg-danger";
                                     
@@ -100,14 +100,14 @@ else
                                     <button class="btn btn-secondary" disabled>
                                         Очікує оцінки
                                     </button>
-                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission.Id"
+                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission!.Id"
                                        class="btn btn-info btn-sm mt-2">
                                         Переглянути здачу
                                     </a>
                                 }
                                 else if (isGraded)
                                 {
-                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission.Id" 
+                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission!.Id" 
                                        class="btn btn-info">
                                         Переглянути здачу
                                     </a>
