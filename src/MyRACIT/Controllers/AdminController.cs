@@ -31,6 +31,7 @@ namespace MyRACIT.Controllers
             ViewBag.TotalTeachers = await _context.TeacherProfiles.CountAsync();
             ViewBag.TotalCourses = await _context.Courses.CountAsync();
             ViewBag.TotalGroups = await _context.Groups.CountAsync();
+            ViewBag.TotalDepartments = await _context.Departments.CountAsync();
             
             return View();
         }
@@ -491,6 +492,21 @@ namespace MyRACIT.Controllers
                 .ToListAsync();
             
             ViewBag.Courses = courses;
+
+            // Статистика студента
+            var studentSubmissions = await _context.Submissions
+                .Include(s => s.Grade)
+                .Where(s => s.StudentId == student.Id)
+                .ToListAsync();
+
+            var grades = studentSubmissions
+                .Where(s => s.Grade != null)
+                .Select(s => s.Grade!.Value)
+                .ToList();
+
+            ViewBag.TotalSubmissions = studentSubmissions.Count;
+            ViewBag.TotalGrades = grades.Count;
+            ViewBag.AverageGrade = grades.Count > 0 ? Math.Round(grades.Average(), 1) : (double?)null;
             
             return View(student);
         }
@@ -563,6 +579,20 @@ namespace MyRACIT.Controllers
                 .ToListAsync();
             
             ViewBag.Courses = courses;
+
+            // Статистика викладача
+            var courseIds = courses.Select(c => c.Id).ToList();
+            var assignments = await _context.Assignments
+                .Where(a => courseIds.Contains(a.CourseId))
+                .ToListAsync();
+            var assignmentIds = assignments.Select(a => a.Id).ToList();
+            var gradesGiven = await _context.Grades
+                .Where(g => g.GradedBy == teacher.Id)
+                .CountAsync();
+
+            ViewBag.TotalCourses = courses.Count;
+            ViewBag.TotalAssignments = assignments.Count;
+            ViewBag.TotalGradesGiven = gradesGiven;
             
             return View(teacher);
         }
@@ -622,6 +652,8 @@ namespace MyRACIT.Controllers
                 .Include(c => c.Subject)
                 .Include(c => c.Teacher)
                     .ThenInclude(t => t!.User)
+                .Include(c => c.Teacher)
+                    .ThenInclude(t => t!.Department)
                 .Include(c => c.Group)
                     .ThenInclude(g => g!.Specialty)
                 .FirstOrDefaultAsync(c => c.Id == id);
@@ -642,8 +674,17 @@ namespace MyRACIT.Controllers
                 .Where(a => a.CourseId == id)
                 .ToListAsync();
             
+            // Здачі по завданнях цього курсу
+            var assignmentIds = assignments.Select(a => a.Id).ToList();
+            var submissionsCount = await _context.Submissions
+                .Where(s => assignmentIds.Contains(s.AssignmentId))
+                .CountAsync();
+
             ViewBag.Students = students;
             ViewBag.Assignments = assignments;
+            ViewBag.StudentsCount = students.Count;
+            ViewBag.TotalAssignments = assignments.Count;
+            ViewBag.TotalSubmissions = submissionsCount;
             
             return View(course);
         }

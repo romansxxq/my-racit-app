@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.Assignment
+﻿@model MyRACIT.Models.Entities.Assignment
 
 @{
     ViewData["Title"] = "Редагувати завдання";
@@ -16,7 +16,7 @@
         
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">✏️ Редагування завдання</h4>
+                <h4 class="mb-0"> Редагування завдання</h4>
             </div>
             <div class="card-body">
                 <form asp-action="EditAssignment" method="post">
@@ -52,10 +52,10 @@
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a asp-action="Assignments" asp-route-courseId="@Model.CourseId" class="btn btn-secondary">
-                            ⬅️ Скасувати
+                             Скасувати
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            💾 Зберегти зміни
+                             Зберегти зміни
                         </button>
                     </div>
                 </form>

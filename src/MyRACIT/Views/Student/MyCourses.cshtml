@@ -1,0 +1,50 @@
+﻿@model IEnumerable<MyRACIT.Models.Entities.Course>
+
+@{
+    ViewData["Title"] = "Мої курси";
+}
+
+<div class="row mb-3">
+    <div class="col">
+        <h2> Мої курси</h2>
+        <p class="text-muted">Курси, на які ви записані</p>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        <strong> Інформація:</strong> Ви не записані на жоден курс.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var course in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100 border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">@course.Subject?.Title</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Викладач:</strong> @course.Teacher?.User?.Name</p>
+                        <p><strong>Група:</strong> <span class="badge bg-info">@course.Group?.Name</span></p>
+                        <p><strong>Період:</strong> @course.StartDate.ToString("dd.MM.yyyy") - @course.EndDate.ToString("dd.MM.yyyy")</p>
+                    </div>
+                    <div class="card-footer bg-light">
+                        <a asp-action="CourseDetails" asp-route-id="@course.Id" class="btn btn-sm btn-primary">
+                            Деталі
+                        </a>
+                        <a asp-action="Assignments" asp-route-courseId="@course.Id" class="btn btn-sm btn-success">
+                            Завдання
+                        </a>
+                        <a asp-action="MySubmissions" asp-route-courseId="@course.Id" class="btn btn-sm btn-info">
+                            Мої здачі
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

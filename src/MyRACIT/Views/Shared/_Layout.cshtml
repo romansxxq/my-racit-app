@@ -31,7 +31,15 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">🎓 My RACIT</a>
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="34" height="34" style="flex-shrink:0;">
+                      <rect width="100" height="100" rx="22" ry="22" fill="rgba(255,255,255,0.2)"/>
+                      <rect x="18" y="22" width="12" height="56" rx="6" ry="6" fill="rgba(255,255,255,0.5)"/>
+                      <rect x="36" y="22" width="46" height="12" rx="6" ry="6" fill="white"/>
+                      <rect x="53" y="34" width="12" height="44" rx="6" ry="6" fill="white"/>
+                    </svg>
+                    <span>My RACIT</span>
+                </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -45,58 +53,43 @@
                             @if (userRole == "Admin")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Index">📊 Dashboard</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Index"> Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Departments">🏢 Кафедри</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Departments">Кафедри</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Specialties">🎯 Спеціальності</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Specialties">Спеціальності</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Groups">👥 Групи</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Groups">Групи</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Subjects">📚 Предмети</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Subjects">Предмети</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Students">🎓 Студенти</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Students">Студенти</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Teachers">👨‍🏫 Викладачі</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Teachers">‍ Викладачі</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Courses">📖 Курси</a>
+                                    <a class="nav-link text-white" asp-controller="Admin" asp-action="Courses">Курси</a>
                                 </li>
                             }
                             else if (userRole == "Teacher")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Index">📚 Мої курси</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Assignments">📝 Завдання</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Submissions">📬 Здані роботи</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Grades">⭐ Оцінки</a>
+                                    <a class="nav-link text-white" asp-controller="Teacher" asp-action="Index">Мої курси</a>
                                 </li>
                             }
                             else if (userRole == "Student")
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Student" asp-action="Index">🏠 Dashboard</a>
+                                    <a class="nav-link text-white" asp-controller="Student" asp-action="Index"> Dashboard</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Student" asp-action="MyCourses">📚 Мої курси</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Student" asp-action="Assignments">📝 Завдання</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-white" asp-controller="Student" asp-action="MyGrades">⭐ Мої оцінки</a>
+                                    <a class="nav-link text-white" asp-controller="Student" asp-action="MyCourses">Мої курси</a>
                                 </li>
                             }
                         }
@@ -129,7 +122,7 @@
                             <li class="nav-item">
                                 <form asp-controller="Auth" asp-action="Logout" method="post" class="d-inline">
                                     <button type="submit" class="btn btn-outline-light btn-sm">
-                                        🚪 Вийти
+                                        Вийти
                                     </button>
                                 </form>
                             </li>
@@ -138,7 +131,7 @@
                         {
                             <li class="nav-item">
                                 <a class="btn btn-outline-light btn-sm" asp-controller="Auth" asp-action="Login">
-                                    🔑 Увійти
+                                    Увійти
                                 </a>
                             </li>
                         }
@@ -153,7 +146,7 @@
         @if (TempData["SuccessMessage"] != null)
         {
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <strong>✅ Успіх!</strong> @TempData["SuccessMessage"]
+                <strong> Успіх!</strong> @TempData["SuccessMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
@@ -161,7 +154,7 @@
         @if (TempData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>❌ Помилка!</strong> @TempData["ErrorMessage"]
+                <strong> Помилка!</strong> @TempData["ErrorMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
@@ -169,7 +162,7 @@
         @if (TempData["InfoMessage"] != null)
         {
             <div class="alert alert-info alert-dismissible fade show" role="alert">
-                <strong>ℹ️ Інформація:</strong> @TempData["InfoMessage"]
+                <strong> Інформація:</strong> @TempData["InfoMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
@@ -177,7 +170,7 @@
         @if (ViewData["ErrorMessage"] != null)
         {
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>❌ Помилка!</strong> @ViewData["ErrorMessage"]
+                <strong> Помилка!</strong> @ViewData["ErrorMessage"]
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }

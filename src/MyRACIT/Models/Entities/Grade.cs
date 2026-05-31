@@ -6,33 +6,38 @@ namespace MyRACIT.Models.Entities
     {
         [Key]
         public int Id { get; set; }
-        [Required]
-        public int StudentId { get; set; }
-        [ForeignKey("StudentId")]
-        public StudentProfile? Student { get; set; }
+
         [Required]
         public int SubmissionId { get; set; }
         [ForeignKey("SubmissionId")]
         public Submission? Submission { get; set; }
         
-        public int? CourseId { get; set; }
-        [ForeignKey("CourseId")]
-        public Course? Course { get; set; }
-        
         [Required(ErrorMessage = "Оцінка є обов'язковою!")]
+        [Range(0, 5, ErrorMessage = "Оцінка повинна бути від 0 до 5!")]
         public int Value { get; set; }
+        
         [Required]
         public DateTime DateIssued { get; set; } = DateTime.UtcNow;
+        
         [DataType(DataType.Html)]
+        [MaxLength(2000)]
         public string? Feedback { get; set; }
         
-        // Aliases для Controllers (для зворотної сумісності)
+        public int GradedBy { get; set; }
+        [ForeignKey("GradedBy")]
+        public TeacherProfile? GradedByTeacher { get; set; }
+        
         [NotMapped]
-        public int StudentProfileId
-        {
-            get => StudentId;
-            set => StudentId = value;
-        }
+        public int StudentProfileId => Submission?.StudentId ?? 0;
+        
+        [NotMapped]
+        public StudentProfile? Student => Submission?.Student;
+        
+        [NotMapped]
+        public int? CourseId => Submission?.Assignment?.CourseId;
+        
+        [NotMapped]
+        public Course? Course => Submission?.Assignment?.Course;
         
         [NotMapped]
         public int Points

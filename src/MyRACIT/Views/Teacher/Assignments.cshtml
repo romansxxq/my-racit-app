@@ -1,9 +1,11 @@
-@model IEnumerable<MyRACIT.Models.Entities.Assignment>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Assignment>
 
 @{
     ViewData["Title"] = "Управління завданнями";
     var courseId = ViewBag.CourseId as int?;
     var courseName = ViewBag.CourseName as string;
+    var getSubmissionsCount = ViewBag.GetSubmissionsCount as Func<int, int> ?? (_ => 0);
+    var getStudentsCount = ViewBag.GetStudentsCount as Func<int?, int> ?? (_ => 0);
 }
 
 <div class="row mb-3">
@@ -14,11 +16,11 @@
                 <li class="breadcrumb-item active">@courseName</li>
             </ol>
         </nav>
-        <h2>📝 Завдання курсу</h2>
+        <h2> Завдання курсу</h2>
     </div>
     <div class="col text-end">
         <a asp-action="CreateAssignment" asp-route-courseId="@courseId" class="btn btn-success">
-            ➕ Створити завдання
+            Створити завдання
         </a>
     </div>
 </div>
@@ -26,7 +28,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Завдання відсутні. Створіть перше завдання для студентів.
+        <strong> Інформація:</strong> Завдання відсутні. Створіть перше завдання для студентів.
     </div>
 }
 else
@@ -59,20 +61,20 @@ else
                             </div>
                             <div class="col-md-4 text-end">
                                 <div class="mb-2">
-                                    <h4>@ViewBag.GetSubmissionsCount(assignment.Id) / @ViewBag.GetStudentsCount(assignment.Course?.GroupId)</h4>
+                                    <h4>@getSubmissionsCount(assignment.Id) / @getStudentsCount(assignment.Course?.GroupId)</h4>
                                     <small class="text-muted">Здано робіт</small>
                                 </div>
                                 <div class="btn-group" role="group">
                                     <a asp-action="EditAssignment" asp-route-id="@assignment.Id" class="btn btn-sm btn-primary">
-                                        ✏️ Редагувати
+                                        Редагувати
                                     </a>
                                     <a asp-action="Submissions" asp-route-assignmentId="@assignment.Id" class="btn btn-sm btn-info">
-                                        📬 Здачі
+                                        Здачі
                                     </a>
                                     <button type="button" class="btn btn-sm btn-danger" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#deleteModal@(assignment.Id)">
-                                        🗑️
+                                        Видалити
                                     </button>
                                 </div>
                             </div>
@@ -90,7 +92,7 @@ else
                             </div>
                             <div class="modal-body">
                                 <p>Ви впевнені, що хочете видалити завдання <strong>"@assignment.Title"</strong>?</p>
-                                <p class="text-danger"><small>⚠️ Увага: Будуть видалені всі здачі та оцінки студентів!</small></p>
+                                <p class="text-danger"><small> Увага: Будуть видалені всі здачі та оцінки студентів!</small></p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>

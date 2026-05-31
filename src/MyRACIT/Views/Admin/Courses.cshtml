@@ -1,4 +1,4 @@
-@model IEnumerable<MyRACIT.Models.Entities.Course>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Course>
 
 @{
     ViewData["Title"] = "Управління курсами";
@@ -6,11 +6,11 @@
 
 <div class="row mb-3">
     <div class="col">
-        <h2>📖 Управління курсами</h2>
+        <h2> Управління курсами</h2>
     </div>
     <div class="col text-end">
         <a asp-action="CreateCourse" class="btn btn-success">
-            ➕ Додати курс
+             Додати курс
         </a>
     </div>
 </div>
@@ -18,7 +18,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Курси відсутні. Додайте перший курс.
+        <strong> Інформація:</strong> Курси відсутні. Додайте перший курс.
     </div>
 }
 else
@@ -28,7 +28,7 @@ else
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>№</th>
+                        <th></th>
                         <th>Предмет</th>
                         <th>Група</th>
                         <th>Викладач</th>
@@ -53,13 +53,13 @@ else
                             <td>
                                 <a asp-action="CourseDetails" asp-route-id="@course.Id" 
                                    class="btn btn-sm btn-info" title="Деталі">
-                                    👁️
+                                    Деталі
                                 </a>
                                 <button type="button" class="btn btn-sm btn-danger" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal@(course.Id)"
                                         title="Видалити">
-                                    🗑️
+                                    Видалити
                                 </button>
                             </td>
                         </tr>
@@ -73,7 +73,7 @@ else
                                     </div>
                                     <div class="modal-body">
                                         <p>Ви впевнені, що хочете видалити курс <strong>"@course.Subject?.Title" для групи "@course.Group?.Name"</strong>?</p>
-                                        <p class="text-danger"><small>⚠️ Увага: Ця дія незворотня!</small></p>
+                                        <p class="text-danger"><small> Увага: Ця дія незворотня!</small></p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
