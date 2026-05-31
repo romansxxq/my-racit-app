@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyRACIT.Data;
 using MyRACIT.Models.Entities;
+using MyRACIT.Models.Exceptions;
 using MyRACIT.Services.Interfaces;
 using System.Security.Cryptography;
 using System.Text;
@@ -28,14 +29,14 @@ namespace MyRACIT.Services
             // Перевірка унікальності email
             if (await EmailExistsAsync(email))
             {
-                throw new InvalidOperationException($"Користувач з email {email} вже існує!");
+                throw new UserAlreadyExistsException(email);
             }
             
             // Перевірка чи існує група
             var group = await _context.Groups.FindAsync(groupId);
             if (group == null)
             {
-                throw new ArgumentException($"Група з ID {groupId} не знайдена!");
+                throw new GroupNotFoundException(groupId);
             }
             
             // Створюємо User
@@ -79,14 +80,14 @@ namespace MyRACIT.Services
             // Перевірка унікальності email
             if (await EmailExistsAsync(email))
             {
-                throw new InvalidOperationException($"Користувач з email {email} вже існує!");
+                throw new UserAlreadyExistsException(email);
             }
             
             // Перевірка чи існує кафедра
             var department = await _context.Departments.FindAsync(departmentId);
             if (department == null)
             {
-                throw new ArgumentException($"Кафедра з ID {departmentId} не знайдена!");
+                throw new DepartmentNotFoundException(departmentId);
             }
             
             // Створюємо User
@@ -130,7 +131,7 @@ namespace MyRACIT.Services
             // Перевірка унікальності email
             if (await EmailExistsAsync(email))
             {
-                throw new InvalidOperationException($"Користувач з email {email} вже існує!");
+                throw new UserAlreadyExistsException(email);
             }
             
             var user = new User
