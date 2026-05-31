@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Створити студента";
     var groups = ViewBag.Groups as IEnumerable<MyRACIT.Models.Entities.Group>;
 }
@@ -7,7 +7,7 @@
     <div class="col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">➕ Створення нового студента</h4>
+                <h4 class="mb-0"> Створення нового студента</h4>
             </div>
             <div class="card-body">
                 <form asp-action="CreateStudent" method="post">
@@ -46,10 +46,10 @@
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a asp-action="Students" class="btn btn-secondary">
-                            ⬅️ Скасувати
+                             Скасувати
                         </a>
                         <button type="submit" class="btn btn-success">
-                            💾 Зберегти
+                             Зберегти
                         </button>
                     </div>
                 </form>

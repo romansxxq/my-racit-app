@@ -8,7 +8,18 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
-        return View();
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            var role = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            return role switch
+            {
+                "Admin" => RedirectToAction("Index", "Admin"),
+                "Teacher" => RedirectToAction("Index", "Teacher"),
+                "Student" => RedirectToAction("Index", "Student"),
+                _ => RedirectToAction("Login", "Auth")
+            };
+        }
+        return RedirectToAction("Login", "Auth");
     }
 
     public IActionResult Privacy()

@@ -1,4 +1,4 @@
-@model IEnumerable<MyRACIT.Models.Entities.Grade>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Grade>
 
 @{
     ViewData["Title"] = "Журнал оцінок";
@@ -8,21 +8,21 @@
 
 <div class="row mb-3">
     <div class="col">
-        <h2>⭐ Журнал оцінок</h2>
+        <h2> Журнал оцінок</h2>
         @if (!string.IsNullOrEmpty(courseName))
         {
             <p class="text-muted">Курс: <strong>@courseName</strong></p>
         }
     </div>
     <div class="col text-end">
-        <a asp-action="Index" class="btn btn-secondary">⬅️ До курсів</a>
+        <a asp-action="Index" class="btn btn-secondary">До курсів</a>
     </div>
 </div>
 
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Оцінок ще немає.
+        <strong> Інформація:</strong> Оцінок ще немає.
     </div>
 }
 else
@@ -32,7 +32,7 @@ else
             <table class="table table-hover table-sm">
                 <thead class="table-light">
                     <tr>
-                        <th>№</th>
+                        <th></th>
                         <th>Студент</th>
                         <th>Група</th>
                         <th>Завдання</th>
@@ -77,11 +77,11 @@ else
                             <td>
                                 <a asp-action="SubmissionDetails" asp-route-id="@grade.SubmissionId" 
                                    class="btn btn-sm btn-info" title="Деталі">
-                                    👁️
+                                    
                                 </a>
                                 <a asp-action="EditGrade" asp-route-submissionId="@grade.SubmissionId" 
                                    class="btn btn-sm btn-warning" title="Редагувати">
-                                    ✏️
+                                    
                                 </a>
                             </td>
                         </tr>

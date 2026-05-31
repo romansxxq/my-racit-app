@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Створити курс";
     var subjects = ViewBag.Subjects as IEnumerable<MyRACIT.Models.Entities.Subject>;
     var groups = ViewBag.Groups as IEnumerable<MyRACIT.Models.Entities.Group>;
@@ -9,7 +9,7 @@
     <div class="col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">➕ Створення нового курсу</h4>
+                <h4 class="mb-0"> Створення нового курсу</h4>
             </div>
             <div class="card-body">
                 <form asp-action="CreateCourse" method="post">
@@ -70,10 +70,10 @@
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a asp-action="Courses" class="btn btn-secondary">
-                            ⬅️ Скасувати
+                             Скасувати
                         </a>
                         <button type="submit" class="btn btn-success">
-                            💾 Зберегти
+                             Зберегти
                         </button>
                     </div>
                 </form>

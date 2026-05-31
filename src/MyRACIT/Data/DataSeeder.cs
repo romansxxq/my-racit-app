@@ -57,7 +57,7 @@ namespace MyRACIT.Data
                         
                         _context.Assignments.RemoveRange(oldAssignments);
                         await _context.SaveChangesAsync();
-                        _logger.LogInformation("✅ Старі завдання видалено");
+                        _logger.LogInformation("Старі завдання видалено");
                     }
                     
                     // Перевіряємо чи є достатньо завдань (менше 3 означає потрібно додати)
@@ -69,7 +69,7 @@ namespace MyRACIT.Data
                     }
                     else
                     {
-                        _logger.LogInformation($"✅ База містить {assignmentsCount} завдань з 5-бальною системою.");
+                        _logger.LogInformation($"База містить {assignmentsCount} завдань з 5-бальною системою.");
                     }
                     
                     return;
@@ -223,7 +223,7 @@ namespace MyRACIT.Data
                 await _userService.CreateStudentAsync(name, email, "Student123", groupId);
             }
 
-            _logger.LogInformation("✅ Створено {Count} студентів (пароль: Student123)", students.Length);
+            _logger.LogInformation("Створено {Count} студентів (пароль: Student123)", students.Length);
         }
 
         private async Task SeedCoursesAsync()

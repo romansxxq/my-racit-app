@@ -14,14 +14,15 @@ namespace MyRACIT.Models.Entities
         public int StudentId { get; set; }
         [ForeignKey("StudentId")]
         public StudentProfile? Student { get; set; }
-        [Required]
-        public string FilePath { get; set; } = string.Empty;
+        public string? FilePath { get; set; }
         [Required]
         public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
         
         // Navigation property to Grade (one-to-one)
         [InverseProperty("Submission")]
         public Grade? Grade { get; set; }
+        
+        public string Content { get; set; } = string.Empty;
         
         // Aliases для Controllers (для зворотної сумісності)
         [NotMapped]
@@ -33,9 +34,6 @@ namespace MyRACIT.Models.Entities
         
         [NotMapped]
         public StudentProfile? StudentProfile => Student;
-        
-        [NotMapped]
-        public string Content { get; set; } = string.Empty;
         
         public override string ToString() => $"Лаба від {Student?.User?.Name} ({Assignment?.Title})";
     }

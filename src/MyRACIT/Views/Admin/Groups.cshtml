@@ -1,4 +1,4 @@
-@model IEnumerable<MyRACIT.Models.Entities.Group>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Group>
 
 @{
     ViewData["Title"] = "Управління групами";
@@ -6,11 +6,11 @@
 
 <div class="row mb-3">
     <div class="col">
-        <h2>👥 Управління групами</h2>
+        <h2> Управління групами</h2>
     </div>
     <div class="col text-end">
         <a asp-action="CreateGroup" class="btn btn-success">
-            ➕ Додати групу
+             Додати групу
         </a>
     </div>
 </div>
@@ -18,7 +18,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Групи відсутні. Додайте першу групу.
+        <strong> Інформація:</strong> Групи відсутні. Додайте першу групу.
     </div>
 }
 else
@@ -28,7 +28,7 @@ else
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>№</th>
+                        <th></th>
                         <th>Назва групи</th>
                         <th>Спеціальність</th>
                         <th>Курс</th>
@@ -49,13 +49,13 @@ else
                             <td>
                                 <a asp-action="EditGroup" asp-route-id="@group.Id" 
                                    class="btn btn-sm btn-primary" title="Редагувати">
-                                    ✏️
+                                    Редагувати
                                 </a>
                                 <button type="button" class="btn btn-sm btn-danger" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal@(group.Id)"
                                         title="Видалити">
-                                    🗑️
+                                    Видалити
                                 </button>
                             </td>
                         </tr>
@@ -69,7 +69,7 @@ else
                                     </div>
                                     <div class="modal-body">
                                         <p>Ви впевнені, що хочете видалити групу <strong>"@group.Name"</strong>?</p>
-                                        <p class="text-danger"><small>⚠️ Увага: Ця дія незворотня!</small></p>
+                                        <p class="text-danger"><small> Увага: Ця дія незворотня!</small></p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>

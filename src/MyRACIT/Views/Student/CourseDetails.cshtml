@@ -15,7 +15,7 @@
         
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">📖 @Model.Subject?.Title</h4>
+                <h4 class="mb-0">@Model.Subject?.Title</h4>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -84,16 +84,13 @@
                 <hr />
                 
                 <div class="d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-secondary">⬅️ До курсів</a>
+                    <a asp-action="Index" class="btn btn-secondary">До курсів</a>
                     <div>
-                        <a asp-action="Assignments" asp-route-courseId="@Model.Id" class="btn btn-success">
-                            📝 Завдання
-                        </a>
                         <a asp-action="MySubmissions" asp-route-courseId="@Model.Id" class="btn btn-info">
-                            📬 Мої здачі
+                            Мої здачі
                         </a>
                         <a asp-action="MyGrades" asp-route-courseId="@Model.Id" class="btn btn-warning">
-                            ⭐ Мої оцінки
+                            Мої оцінки
                         </a>
                     </div>
                 </div>

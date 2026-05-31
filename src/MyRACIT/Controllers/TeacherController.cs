@@ -137,8 +137,19 @@ namespace MyRACIT.Controllers
                 .OrderBy(s => s.User!.Name)
                 .ToListAsync();
             
+            // Підрахунок здач та оцінок
+            var assignmentIds = assignments.Select(a => a.Id).ToList();
+            var submissionsCount = await _context.Submissions
+                .CountAsync(s => assignmentIds.Contains(s.AssignmentId));
+            var gradesCount = await _context.Grades
+                .CountAsync(g => g.Submission!.Assignment!.CourseId == id);
+
             ViewBag.Assignments = assignments;
             ViewBag.Students = students;
+            ViewBag.StudentsCount = students.Count;
+            ViewBag.AssignmentsCount = assignments.Count;
+            ViewBag.SubmissionsCount = submissionsCount;
+            ViewBag.GradesCount = gradesCount;
             
             return View(course);
         }
@@ -529,10 +540,10 @@ namespace MyRACIT.Controllers
                 GradedBy = teacher.Id
             };
             
-            ViewBag.Submission = submission;
+            ViewBag.Grade = grade;
             ViewBag.MaxPoints = submission.Assignment.MaxPoints;
             
-            return View(grade);
+            return View(submission);
         }
         
         // POST: Teacher/GradeSubmission
@@ -558,44 +569,52 @@ namespace MyRACIT.Controllers
             }
             
             // Валідація балів
-            if (grade.Points < 0 || grade.Points > submission.Assignment.MaxPoints)
+            if (grade.Value < 0 || grade.Value > submission.Assignment.MaxPoints)
             {
-                ModelState.AddModelError("Points", 
+                ModelState.AddModelError("Value", 
                     $"Бали мають бути від 0 до {submission.Assignment.MaxPoints}");
             }
             
             if (!ModelState.IsValid)
             {
-                ViewBag.Submission = await _context.Submissions
+                var submissionForView = await _context.Submissions
                     .Include(s => s.Assignment)
+                        .ThenInclude(a => a!.Course)
                     .Include(s => s.Student)
                         .ThenInclude(sp => sp!.User)
+                    .Include(s => s.Grade)
                     .FirstOrDefaultAsync(s => s.Id == grade.SubmissionId);
+                ViewBag.Grade = grade;
                 ViewBag.MaxPoints = submission.Assignment.MaxPoints;
-                return View(grade);
+                return View(submissionForView);
             }
-            
-            grade.GradedAt = DateTime.Now;
-            grade.GradedBy = teacher.Id;
             
             if (submission.Grade == null)
             {
-                // Створюємо нову оцінку
-                _context.Grades.Add(grade);
+                // Створюємо нову оцінку (явний об'єкт для уникнення EF Core 10 IDENTITY_INSERT помилки)
+                var newGrade = new Grade
+                {
+                    SubmissionId = grade.SubmissionId,
+                    Value = grade.Value,
+                    Feedback = grade.Feedback,
+                    DateIssued = DateTime.Now,
+                    GradedBy = teacher.Id
+                };
+                _context.Grades.Add(newGrade);
             }
             else
             {
                 // Оновлюємо існуючу
-                submission.Grade.Points = grade.Points;
+                submission.Grade.Value = grade.Value;
                 submission.Grade.Feedback = grade.Feedback;
-                submission.Grade.GradedAt = grade.GradedAt;
+                submission.Grade.DateIssued = DateTime.Now;
                 submission.Grade.GradedBy = teacher.Id;
             }
             
             await _context.SaveChangesAsync();
             
-            TempData["Success"] = $"Роботу оцінено на {grade.Points} балів!";
-            return RedirectToAction(nameof(AssignmentDetails), new { id = submission.AssignmentId });
+            TempData["Success"] = $"Роботу оцінено на {grade.Value} балів!";
+            return RedirectToAction(nameof(Submissions), new { assignmentId = submission.AssignmentId });
         }
         
         // ===== UC11: ПЕРЕГЛЯД ОЦІНОК КУРСУ =====
@@ -644,7 +663,7 @@ namespace MyRACIT.Controllers
             ViewBag.Assignments = assignments;
             ViewBag.Grades = grades;
             
-            return View();
+            return View(grades);
         }
         
         // GET: Teacher/StudentGrades?courseId=5&studentId=10

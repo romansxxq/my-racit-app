@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.StudentProfile
+﻿@model MyRACIT.Models.Entities.StudentProfile
 
 @{
     ViewData["Title"] = "Мій профіль";
@@ -6,7 +6,7 @@
 
 <div class="row mb-4">
     <div class="col">
-        <h2>👤 Профіль студента</h2>
+        <h2> Профіль студента</h2>
         <p class="text-muted">Перегляд вашого профілю та статистики</p>
     </div>
 </div>
@@ -34,7 +34,7 @@
                 <div class="card border-success">
                     <div class="card-body text-center">
                         <h3 class="text-success">@ViewBag.TotalCourses</h3>
-                        <p class="mb-0">📚 Курсів</p>
+                        <p class="mb-0"> Курсів</p>
                     </div>
                 </div>
             </div>
@@ -42,6 +42,7 @@
                 <div class="card border-info">
                     <div class="card-body text-center">
                         <h3 class="text-info">@ViewBag.TotalSubmissions</h3>
+                        <p class="mb-0"> Здач</p>
                     </div>
                 </div>
             </div>
@@ -49,7 +50,7 @@
                 <div class="card border-warning">
                     <div class="card-body text-center">
                         <h3 class="text-warning">@ViewBag.TotalGrades</h3>
-                        <p class="mb-0">⭐ Оцінок</p>
+                        <p class="mb-0"> Оцінок</p>
                     </div>
                 </div>
             </div>
@@ -57,7 +58,7 @@
                 <div class="card border-primary">
                     <div class="card-body text-center">
                         <h3 class="text-primary">@ViewBag.AverageGrade</h3>
-                        <p class="mb-0">📊 Середній бал</p>
+                        <p class="mb-0"> Середній бал</p>
                     </div>
                 </div>
             </div>
@@ -70,28 +71,18 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header bg-secondary text-white">
-                <h5 class="mb-0">🔗 Швидкі посилання</h5>
+                <h5 class="mb-0"> Швидкі посилання</h5>
             </div>
             <div class="card-body">
                 <div class="row text-center">
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <a asp-action="MyCourses" class="btn btn-lg btn-outline-success w-100">
-                            📚<br/>Мої курси
+                            Мої курси
                         </a>
                     </div>
-                    <div class="col-md-3">
-                        <a asp-action="MyAssignments" class="btn btn-lg btn-outline-primary w-100">
-                            📝<br/>Завдання
-                        </a>
-                    </div>
-                    <div class="col-md-3">
-                        <a asp-action="MySubmissions" class="btn btn-lg btn-outline-info w-100">
-                            📬<br/>Мої здачі
-                        </a>
-                    </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <a asp-action="MyGrades" class="btn btn-lg btn-outline-warning w-100">
-                            ⭐<br/>Мої оцінки
+                            Мої оцінки
                         </a>
                     </div>
                 </div>

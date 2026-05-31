@@ -131,8 +131,16 @@ namespace MyRACIT.Controllers
                          && s.Assignment!.CourseId == id)
                 .ToListAsync();
             
+            var gradedSubmissions = mySubmissions.Where(s => s.Grade != null).ToList();
+            var averageGrade = gradedSubmissions.Any()
+                ? gradedSubmissions.Average(s => s.Grade!.Value)
+                : 0;
+
             ViewBag.Assignments = assignments;
-            ViewBag.MySubmissions = mySubmissions;
+            ViewBag.TotalAssignments = assignments.Count;
+            ViewBag.MySubmissions = mySubmissions.Count;
+            ViewBag.MyGrades = gradedSubmissions.Count;
+            ViewBag.AverageGrade = gradedSubmissions.Any() ? averageGrade.ToString("0.0") : "—";
             
             return View(course);
         }
@@ -281,7 +289,7 @@ namespace MyRACIT.Controllers
         // POST: Student/SubmitAssignment
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SubmitAssignment(Submission submission)
+        public async Task<IActionResult> SubmitAssignment(Submission submission, IFormFile? File)
         {
             var student = await GetCurrentStudentProfileAsync();
             if (student == null)
@@ -298,13 +306,32 @@ namespace MyRACIT.Controllers
                 return NotFound("Завдання не знайдено");
             }
             
+            // Обробка завантаженого файлу
+            string? savedFilePath = null;
+            if (File != null && File.Length > 0)
+            {
+                var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                Directory.CreateDirectory(uploadsDir);
+                var uniqueName = $"{Guid.NewGuid()}_{Path.GetFileName(File.FileName)}";
+                var fullPath = Path.Combine(uploadsDir, uniqueName);
+                using var stream = new FileStream(fullPath, FileMode.Create);
+                await File.CopyToAsync(stream);
+                savedFilePath = $"/uploads/{uniqueName}";
+            }
+
+            // Перевірка: студент має або написати опис, або здати файл (або обидва)
+            if (string.IsNullOrWhiteSpace(submission.Content) && File == null)
+            {
+                ModelState.AddModelError("", "Потрібно або написати опис роботи, або завантажити файл");
+            }
+
             if (!ModelState.IsValid)
             {
-                ViewBag.Assignment = await _context.Assignments
+                var assignmentForView = await _context.Assignments
                     .Include(a => a.Course)
                         .ThenInclude(c => c!.Subject)
                     .FirstOrDefaultAsync(a => a.Id == submission.AssignmentId);
-                return View(submission);
+                return View(assignmentForView);
             }
             
             // Перевіряємо чи вже є подана робота
@@ -315,8 +342,14 @@ namespace MyRACIT.Controllers
             if (existingSubmission != null)
             {
                 // Переподання роботи
-                existingSubmission.Content = submission.Content;
-                existingSubmission.FilePath = submission.FilePath;
+                if (!string.IsNullOrWhiteSpace(submission.Content))
+                {
+                    existingSubmission.Content = submission.Content;
+                }
+                if (savedFilePath != null)
+                {
+                    existingSubmission.FilePath = savedFilePath;
+                }
                 existingSubmission.SubmittedAt = DateTime.Now;
                 
                 // Видаляємо стару оцінку (викладач має оцінити заново)
@@ -334,10 +367,15 @@ namespace MyRACIT.Controllers
             else
             {
                 // Нова робота
-                submission.StudentId = student.Id;
-                submission.SubmittedAt = DateTime.Now;
-                
-                _context.Submissions.Add(submission);
+                var newSubmission = new Submission
+                {
+                    AssignmentId = submission.AssignmentId,
+                    StudentId = student.Id,
+                    Content = submission.Content,
+                    FilePath = savedFilePath,
+                    SubmittedAt = DateTime.Now
+                };
+                _context.Submissions.Add(newSubmission);
                 await _context.SaveChangesAsync();
                 
                 TempData["Success"] = "Робота успішно подана!";
@@ -376,6 +414,9 @@ namespace MyRACIT.Controllers
             return View(submissions);
         }
         
+        // GET: Student/ViewSubmission/5
+        public Task<IActionResult> ViewSubmission(int id) => SubmissionDetails(id);
+
         // GET: Student/SubmissionDetails/5
         public async Task<IActionResult> SubmissionDetails(int id)
         {
@@ -396,6 +437,8 @@ namespace MyRACIT.Controllers
             {
                 return NotFound("Роботу не знайдено");
             }
+            
+            ViewBag.CourseId = submission.Assignment?.CourseId;
             
             return View(submission);
         }
@@ -481,7 +524,7 @@ namespace MyRACIT.Controllers
                 ? Math.Round((double)totalPoints / maxPossiblePoints * 100, 2) 
                 : 0;
             
-            return View(student);
+            return View(grades);
         }
         
         // GET: Student/CourseGrades?courseId=5

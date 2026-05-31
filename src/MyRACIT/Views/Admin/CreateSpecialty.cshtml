@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.Specialty
+﻿@model MyRACIT.Models.Entities.Specialty
 
 @{
     ViewData["Title"] = "Створити спеціальність";
@@ -8,7 +8,7 @@
     <div class="col-md-8 offset-md-2">
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">➕ Створення нової спеціальності</h4>
+                <h4 class="mb-0"> Створення нової спеціальності</h4>
             </div>
             <div class="card-body">
                 <form asp-action="CreateSpecialty" method="post">
@@ -29,10 +29,10 @@
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <a asp-action="Specialties" class="btn btn-secondary">
-                            ⬅️ Скасувати
+                             Скасувати
                         </a>
                         <button type="submit" class="btn btn-success">
-                            💾 Зберегти
+                             Зберегти
                         </button>
                     </div>
                 </form>

@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.Submission
+﻿@model MyRACIT.Models.Entities.Submission
 
 @{
     ViewData["Title"] = "Оцінити роботу";
@@ -16,7 +16,7 @@
         
         <div class="card">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">⭐ Оцінювання роботи</h4>
+                <h4 class="mb-0">Оцінювання роботи</h4>
             </div>
             <div class="card-body">
                 <div class="alert alert-info">
@@ -40,17 +40,17 @@
                     </div>
                     
                     <div class="mb-3">
-                        <label for="Comment" class="form-label">Коментар (необов'язково)</label>
-                        <textarea name="Comment" class="form-control" rows="4" 
+                        <label for="Feedback" class="form-label">Коментар (необов'язково)</label>
+                        <textarea name="Feedback" class="form-control" rows="4" 
                                   placeholder="Додайте коментар або зауваження для студента..."></textarea>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
                         <a asp-action="SubmissionDetails" asp-route-id="@Model.Id" class="btn btn-secondary">
-                            ⬅️ Назад
+                             Назад
                         </a>
                         <button type="submit" class="btn btn-success">
-                            💾 Виставити оцінку
+                             Виставити оцінку
                         </button>
                     </div>
                 </form>

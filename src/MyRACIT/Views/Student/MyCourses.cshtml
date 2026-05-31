@@ -1,4 +1,4 @@
-@model IEnumerable<MyRACIT.Models.Entities.Course>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Course>
 
 @{
     ViewData["Title"] = "Мої курси";
@@ -6,7 +6,7 @@
 
 <div class="row mb-3">
     <div class="col">
-        <h2>📚 Мої курси</h2>
+        <h2> Мої курси</h2>
         <p class="text-muted">Курси, на які ви записані</p>
     </div>
 </div>
@@ -14,7 +14,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Ви не записані на жоден курс.
+        <strong> Інформація:</strong> Ви не записані на жоден курс.
     </div>
 }
 else
@@ -34,13 +34,13 @@ else
                     </div>
                     <div class="card-footer bg-light">
                         <a asp-action="CourseDetails" asp-route-id="@course.Id" class="btn btn-sm btn-primary">
-                            📖 Деталі
+                            Деталі
                         </a>
                         <a asp-action="Assignments" asp-route-courseId="@course.Id" class="btn btn-sm btn-success">
-                            📝 Завдання
+                            Завдання
                         </a>
                         <a asp-action="MySubmissions" asp-route-courseId="@course.Id" class="btn btn-sm btn-info">
-                            📬 Мої здачі
+                            Мої здачі
                         </a>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-@model IEnumerable<MyRACIT.Models.Entities.StudentProfile>
+﻿@model IEnumerable<MyRACIT.Models.Entities.StudentProfile>
 
 @{
     ViewData["Title"] = "Управління студентами";
@@ -6,11 +6,11 @@
 
 <div class="row mb-3">
     <div class="col">
-        <h2>🎓 Управління студентами</h2>
+        <h2> Управління студентами</h2>
     </div>
     <div class="col text-end">
         <a asp-action="CreateStudent" class="btn btn-success">
-            ➕ Додати студента
+             Додати студента
         </a>
     </div>
 </div>
@@ -18,7 +18,7 @@
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Студенти відсутні. Додайте першого студента.
+        <strong> Інформація:</strong> Студенти відсутні. Додайте першого студента.
     </div>
 }
 else
@@ -28,7 +28,7 @@ else
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>№</th>
+                        <th></th>
                         <th>ПІБ</th>
                         <th>Email</th>
                         <th>Група</th>
@@ -49,13 +49,13 @@ else
                             <td>
                                 <a asp-action="StudentDetails" asp-route-id="@student.Id" 
                                    class="btn btn-sm btn-info" title="Деталі">
-                                    👁️
+                                    Деталі
                                 </a>
                                 <button type="button" class="btn btn-sm btn-danger" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#deleteModal@(student.Id)"
                                         title="Видалити">
-                                    🗑️
+                                    Видалити
                                 </button>
                             </td>
                         </tr>
@@ -69,7 +69,7 @@ else
                                     </div>
                                     <div class="modal-body">
                                         <p>Ви впевнені, що хочете видалити студента <strong>"@student.User?.Name"</strong>?</p>
-                                        <p class="text-danger"><small>⚠️ Увага: Ця дія незворотня!</small></p>
+                                        <p class="text-danger"><small> Увага: Ця дія незворотня!</small></p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>

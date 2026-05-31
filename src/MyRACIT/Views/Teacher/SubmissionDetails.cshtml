@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.Submission
+﻿@model MyRACIT.Models.Entities.Submission
 
 @{
     ViewData["Title"] = "Деталі здачі";
@@ -17,7 +17,7 @@
         <div class="card">
             <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">Деталі здачі роботи</h4>
-                <a asp-action="Submissions" class="btn btn-light btn-sm">⬅️ Назад</a>
+                <a asp-action="Submissions" class="btn btn-light btn-sm"> Назад</a>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -83,7 +83,7 @@
                     <div class="mb-4">
                         <h5>Прикріплені файли</h5>
                         <a href="@Model.FilePath" class="btn btn-primary" download>
-                            📎 Завантажити файл
+                             Завантажити файл
                         </a>
                     </div>
                 }
