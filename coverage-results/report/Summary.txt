@@ -1,0 +1,108 @@
+Summary
+  Generated on: 01.06.2026 - 1:23:55
+  Coverage date: 01.06.2026 - 1:23:37
+  Parser: Cobertura
+  Assemblies: 1
+  Classes: 86
+  Files: 87
+  Line coverage: 2.7%
+  Covered lines: 169
+  Uncovered lines: 6069
+  Coverable lines: 6238
+  Total lines: 11810
+  Branch coverage: 0.7% (14 of 1828)
+  Covered branches: 14
+  Total branches: 1828
+  Method coverage: 12.3% (43 of 348)
+  Full method coverage: 12.3% (43 of 348)
+  Covered methods: 43
+  Fully covered methods: 43
+  Total methods: 348
+
+MyRACIT                                                          2.7%
+  AspNetCoreGeneratedDocument.Views__ViewStart                     0%
+  AspNetCoreGeneratedDocument.Views_Admin_CourseDetails            0%
+  AspNetCoreGeneratedDocument.Views_Admin_Courses                  0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateCourse             0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateDepartment         0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateGroup              0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateSpecialty          0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateStudent            0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateSubject            0%
+  AspNetCoreGeneratedDocument.Views_Admin_CreateTeacher            0%
+  AspNetCoreGeneratedDocument.Views_Admin_Departments              0%
+  AspNetCoreGeneratedDocument.Views_Admin_EditDepartment           0%
+  AspNetCoreGeneratedDocument.Views_Admin_EditGroup                0%
+  AspNetCoreGeneratedDocument.Views_Admin_EditSpecialty            0%
+  AspNetCoreGeneratedDocument.Views_Admin_EditSubject              0%
+  AspNetCoreGeneratedDocument.Views_Admin_Groups                   0%
+  AspNetCoreGeneratedDocument.Views_Admin_Index                    0%
+  AspNetCoreGeneratedDocument.Views_Admin_Specialties              0%
+  AspNetCoreGeneratedDocument.Views_Admin_StudentDetails           0%
+  AspNetCoreGeneratedDocument.Views_Admin_Students                 0%
+  AspNetCoreGeneratedDocument.Views_Admin_Subjects                 0%
+  AspNetCoreGeneratedDocument.Views_Admin_TeacherDetails           0%
+  AspNetCoreGeneratedDocument.Views_Admin_Teachers                 0%
+  AspNetCoreGeneratedDocument.Views_Auth_AccessDenied              0%
+  AspNetCoreGeneratedDocument.Views_Auth_Login                     0%
+  AspNetCoreGeneratedDocument.Views_Home_Index                     0%
+  AspNetCoreGeneratedDocument.Views_Home_Privacy                   0%
+  AspNetCoreGeneratedDocument.Views_Shared__Layout                 0%
+  AspNetCoreGeneratedDocument.Views_Shared_Error                   0%
+  AspNetCoreGeneratedDocument.Views_Student_Assignments            0%
+  AspNetCoreGeneratedDocument.Views_Student_CourseDetails          0%
+  AspNetCoreGeneratedDocument.Views_Student_Index                  0%
+  AspNetCoreGeneratedDocument.Views_Student_MyCourses              0%
+  AspNetCoreGeneratedDocument.Views_Student_MyGrades               0%
+  AspNetCoreGeneratedDocument.Views_Student_MySubmissions          0%
+  AspNetCoreGeneratedDocument.Views_Student_SubmitAssignment       0%
+  AspNetCoreGeneratedDocument.Views_Student_ViewSubmission         0%
+  AspNetCoreGeneratedDocument.Views_Teacher_Assignments            0%
+  AspNetCoreGeneratedDocument.Views_Teacher_CourseDetails          0%
+  AspNetCoreGeneratedDocument.Views_Teacher_CreateAssignment       0%
+  AspNetCoreGeneratedDocument.Views_Teacher_EditAssignment         0%
+  AspNetCoreGeneratedDocument.Views_Teacher_EditGrade              0%
+  AspNetCoreGeneratedDocument.Views_Teacher_Grades                 0%
+  AspNetCoreGeneratedDocument.Views_Teacher_GradeSubmission        0%
+  AspNetCoreGeneratedDocument.Views_Teacher_Index                  0%
+  AspNetCoreGeneratedDocument.Views_Teacher_SubmissionDetails      0%
+  AspNetCoreGeneratedDocument.Views_Teacher_Submissions            0%
+  MyRACIT.Controllers.AdminController                              0%
+  MyRACIT.Controllers.AuthController                               0%
+  MyRACIT.Controllers.HomeController                               0%
+  MyRACIT.Controllers.StudentController                            0%
+  MyRACIT.Controllers.TeacherController                            0%
+  MyRACIT.Data.DataSeeder                                          0%
+  MyRACIT.Data.MyRacitDbContext                                  100%
+  MyRACIT.Migrations.AddSubmissionContent                          0%
+  MyRACIT.Migrations.AddSubmissionGradeNavigation                  0%
+  MyRACIT.Migrations.FixGradeSubmissionRelationship                0%
+  MyRACIT.Migrations.InitialMigration                              0%
+  MyRACIT.Migrations.MyRacitDbContextModelSnapshot                 0%
+  MyRACIT.Migrations.UpdateGradeAndAddAssignmentResources          0%
+  MyRACIT.Models.DTOs.ChangePasswordDto                            0%
+  MyRACIT.Models.DTOs.CreateStudentDto                             0%
+  MyRACIT.Models.DTOs.CreateTeacherDto                             0%
+  MyRACIT.Models.DTOs.LoginDto                                     0%
+  MyRACIT.Models.DTOs.UpdateProfileDto                             0%
+  MyRACIT.Models.Entities.Assignment                               0%
+  MyRACIT.Models.Entities.AssignmentFile                           0%
+  MyRACIT.Models.Entities.AssignmentLink                           0%
+  MyRACIT.Models.Entities.Course                                   0%
+  MyRACIT.Models.Entities.Department                               0%
+  MyRACIT.Models.Entities.Grade                                    0%
+  MyRACIT.Models.Entities.Group                                 66.6%
+  MyRACIT.Models.Entities.Specialty                               75%
+  MyRACIT.Models.Entities.StudentProfile                          60%
+  MyRACIT.Models.Entities.Subject                                  0%
+  MyRACIT.Models.Entities.Submission                               0%
+  MyRACIT.Models.Entities.TeacherProfile                           0%
+  MyRACIT.Models.Entities.User                                  62.5%
+  MyRACIT.Models.ErrorViewModel                                    0%
+  MyRACIT.Models.Exceptions.DepartmentNotFoundException            0%
+  MyRACIT.Models.Exceptions.GroupNotFoundException                80%
+  MyRACIT.Models.Exceptions.RacitException                        50%
+  MyRACIT.Models.Exceptions.UserAlreadyExistsException            80%
+  MyRACIT.Services.FileStorageService                              0%
+  MyRACIT.Services.UserService                                  57.9%
+  Program                                                          0%
