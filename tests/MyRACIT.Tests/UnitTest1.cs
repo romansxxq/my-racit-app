@@ -1,10 +1,9 @@
-﻿namespace MyRACIT.Tests;
+﻿// Tests split into separate files:
+// - Helpers/DbFactory.cs
+// - UserService_AuthenticateTests.cs
+// - UserService_EmailExistsTests.cs
+// - UserService_CreateAdminTests.cs
+// - UserService_CreateStudentTests.cs
+// - UserService_ChangePasswordTests.cs
 
-public class UnitTest1
-{
-    [Fact]
-    public void Test1()
-    {
-
-    }
-}
+namespace MyRACIT.Tests;
