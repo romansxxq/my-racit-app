@@ -35,8 +35,8 @@ public class UserService_CreateStudentTests
 
         // Assert
         Assert.NotNull(profile);
-        Assert.Equal(group.Id, profile.GroupId);
-        Assert.Equal(UserRole.Student, profile.User.Role);
+        Assert.Equal(group.Id, profile!.GroupId);
+        Assert.Equal(UserRole.Student, profile.User!.Role);
     }
 
     [Fact]

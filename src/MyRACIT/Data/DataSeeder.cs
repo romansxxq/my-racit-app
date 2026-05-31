@@ -232,9 +232,9 @@ namespace MyRACIT.Data
             var dbSubject = await _context.Subjects.FirstAsync(s => s.Title.Contains("Бази даних"));
             var webSubject = await _context.Subjects.FirstAsync(s => s.Title.Contains("Веб-розробка"));
 
-            var teacher1 = await _context.TeacherProfiles.FirstAsync(t => t.User.Email == "teacher@rfkit.edu.ua");
-            var teacher2 = await _context.TeacherProfiles.FirstAsync(t => t.User.Email == "petrenko@rfkit.edu.ua");
-            var teacher3 = await _context.TeacherProfiles.FirstAsync(t => t.User.Email == "sydorenko@rfkit.edu.ua");
+            var teacher1 = await _context.TeacherProfiles.Include(t => t.User).FirstAsync(t => t.User!.Email == "teacher@rfkit.edu.ua");
+            var teacher2 = await _context.TeacherProfiles.Include(t => t.User).FirstAsync(t => t.User!.Email == "petrenko@rfkit.edu.ua");
+            var teacher3 = await _context.TeacherProfiles.Include(t => t.User).FirstAsync(t => t.User!.Email == "sydorenko@rfkit.edu.ua");
 
             var ipz21Group = await _context.Groups.FirstAsync(g => g.Name == "ІПЗ-21");
             var ipz22Group = await _context.Groups.FirstAsync(g => g.Name == "ІПЗ-22");
