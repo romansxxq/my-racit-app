@@ -1,0 +1,144 @@
+Используются параметры запуска из D:\IPZ\my-racit-app\src\MyRACIT\Properties\launchSettings.json...
+Сборка…
+D:\IPZ\my-racit-app\src\MyRACIT\Data\DataSeeder.cs(235,75): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Data\DataSeeder.cs(236,75): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Data\DataSeeder.cs(237,75): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Controllers\StudentController.cs(56,34): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Controllers\StudentController.cs(60,29): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Controllers\StudentController.cs(500,29): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\MySubmissions.cshtml(70,62): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\Assignments.cshtml(35,48): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\Assignments.cshtml(76,49): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\Assignments.cshtml(77,62): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\Assignments.cshtml(110,83): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\MyGrades.cshtml(125,86): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+D:\IPZ\my-racit-app\src\MyRACIT\Views\Student\MyGrades.cshtml(125,86): warning CS8602: Разыменование вероятной пустой ссылки. [D:\IPZ\my-racit-app\src\MyRACIT\MyRACIT.csproj]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (23ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT CASE
+          WHEN EXISTS (
+              SELECT 1
+              FROM [Users] AS [u]) THEN CAST(1 AS bit)
+          ELSE CAST(0 AS bit)
+      END
+info: MyRACIT.Data.DataSeeder[0]
+      База даних вже містить дані користувачів.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [a].[Id], [a].[CourseId], [a].[CreatedAt], [a].[Deadline], [a].[Description], [a].[MaxGrade], [a].[Title], [a].[Type]
+      FROM [Assignments] AS [a]
+      WHERE [a].[MaxGrade] > 5
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Assignments] AS [a]
+info: MyRACIT.Data.DataSeeder[0]
+      ✅ База містить 4 завдань з 5-бальною системою.
+info: Microsoft.Hosting.Lifetime[14]
+      Now listening on: http://localhost:5240
+info: Microsoft.Hosting.Lifetime[0]
+      Application started. Press Ctrl+C to shut down.
+info: Microsoft.Hosting.Lifetime[0]
+      Hosting environment: Development
+info: Microsoft.Hosting.Lifetime[0]
+      Content root path: D:\IPZ\my-racit-app\src\MyRACIT
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (18ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [c].[Id], [c].[EndDate], [c].[GroupId], [c].[StartDate], [c].[SubjectId], [c].[TeacherId], [s].[Id], [s].[Title], [t].[Id], [t].[DepartmentId], [t].[UserId], [u].[Id], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Role], [d].[Id], [d].[Name], [g].[Id], [g].[Name], [g].[SpecialtyId], [g].[StudyYear], [s0].[Id], [s0].[Code], [s0].[Name]
+      FROM [Courses] AS [c]
+      INNER JOIN [Subjects] AS [s] ON [c].[SubjectId] = [s].[Id]
+      INNER JOIN [TeacherProfiles] AS [t] ON [c].[TeacherId] = [t].[Id]
+      INNER JOIN [Users] AS [u] ON [t].[UserId] = [u].[Id]
+      INNER JOIN [Departments] AS [d] ON [t].[DepartmentId] = [d].[Id]
+      INNER JOIN [Groups] AS [g] ON [c].[GroupId] = [g].[Id]
+      INNER JOIN [Specialties] AS [s0] ON [g].[SpecialtyId] = [s0].[Id]
+      WHERE [c].[Id] = @id
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@course_GroupId='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [s].[Id], [s].[GroupId], [s].[UserId], [u].[Id], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Role]
+      FROM [StudentProfiles] AS [s]
+      INNER JOIN [Users] AS [u] ON [s].[UserId] = [u].[Id]
+      WHERE [s].[GroupId] = @course_GroupId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [a].[Id], [a].[CourseId], [a].[CreatedAt], [a].[Deadline], [a].[Description], [a].[MaxGrade], [a].[Title], [a].[Type]
+      FROM [Assignments] AS [a]
+      WHERE [a].[CourseId] = @id
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (3ms) [Parameters=[@assignmentIds1='?' (DbType = Int32), @assignmentIds2='?' (DbType = Int32), @assignmentIds3='?' (DbType = Int32), @assignmentIds4='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Submissions] AS [s]
+      WHERE [s].[AssignmentId] IN (@assignmentIds1, @assignmentIds2, @assignmentIds3, @assignmentIds4)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT TOP(1) [c].[Id], [c].[EndDate], [c].[GroupId], [c].[StartDate], [c].[SubjectId], [c].[TeacherId], [s].[Id], [s].[Title], [t].[Id], [t].[DepartmentId], [t].[UserId], [u].[Id], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Role], [d].[Id], [d].[Name], [g].[Id], [g].[Name], [g].[SpecialtyId], [g].[StudyYear], [s0].[Id], [s0].[Code], [s0].[Name]
+      FROM [Courses] AS [c]
+      INNER JOIN [Subjects] AS [s] ON [c].[SubjectId] = [s].[Id]
+      INNER JOIN [TeacherProfiles] AS [t] ON [c].[TeacherId] = [t].[Id]
+      INNER JOIN [Users] AS [u] ON [t].[UserId] = [u].[Id]
+      INNER JOIN [Departments] AS [d] ON [t].[DepartmentId] = [d].[Id]
+      INNER JOIN [Groups] AS [g] ON [c].[GroupId] = [g].[Id]
+      INNER JOIN [Specialties] AS [s0] ON [g].[SpecialtyId] = [s0].[Id]
+      WHERE [c].[Id] = @id
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[@course_GroupId='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [s].[Id], [s].[GroupId], [s].[UserId], [u].[Id], [u].[Email], [u].[Name], [u].[PasswordHash], [u].[Role]
+      FROM [StudentProfiles] AS [s]
+      INNER JOIN [Users] AS [u] ON [s].[UserId] = [u].[Id]
+      WHERE [s].[GroupId] = @course_GroupId
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@id='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT [a].[Id], [a].[CourseId], [a].[CreatedAt], [a].[Deadline], [a].[Description], [a].[MaxGrade], [a].[Title], [a].[Type]
+      FROM [Assignments] AS [a]
+      WHERE [a].[CourseId] = @id
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[@assignmentIds1='?' (DbType = Int32), @assignmentIds2='?' (DbType = Int32), @assignmentIds3='?' (DbType = Int32), @assignmentIds4='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Submissions] AS [s]
+      WHERE [s].[AssignmentId] IN (@assignmentIds1, @assignmentIds2, @assignmentIds3, @assignmentIds4)
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [StudentProfiles] AS [s]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TeacherProfiles] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (2ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Courses] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Groups] AS [g]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Departments] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT [d].[Id], [d].[Name]
+      FROM [Departments] AS [d]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (1ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [StudentProfiles] AS [s]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [TeacherProfiles] AS [t]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Courses] AS [c]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Groups] AS [g]
+info: Microsoft.EntityFrameworkCore.Database.Command[20101]
+      Executed DbCommand (0ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)
+      FROM [Departments] AS [d]

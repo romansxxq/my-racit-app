@@ -1,0 +1,92 @@
+@model MyRACIT.Models.Entities.Course
+
+@{
+    ViewData["Title"] = $"Деталі курсу - {Model.Subject?.Title}";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">📖 Інформація про курс</h4>
+                <a asp-action="Courses" class="btn btn-light btn-sm">⬅️ Назад</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Основна інформація</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Предмет:</th>
+                                <td><strong>@Model.Subject?.Title</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Група:</th>
+                                <td><span class="badge bg-info">@Model.Group?.Name</span></td>
+                            </tr>
+                            <tr>
+                                <th>Спеціальність:</th>
+                                <td>@Model.Group?.Specialty?.Code - @Model.Group?.Specialty?.Name</td>
+                            </tr>
+                            <tr>
+                                <th>Курс:</th>
+                                <td>@Model.Group?.StudyYear</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Викладач та період</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Викладач:</th>
+                                <td><strong>@Model.Teacher?.User?.Name</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Кафедра:</th>
+                                <td>@Model.Teacher?.Department?.Name</td>
+                            </tr>
+                            <tr>
+                                <th>Період:</th>
+                                <td>@Model.StartDate.ToString("dd.MM.yyyy") - @Model.EndDate.ToString("dd.MM.yyyy")</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <hr />
+                
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <h5>Статистика курсу</h5>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.TotalAssignments</h3>
+                                        <p class="text-muted mb-0">Завдань створено</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.TotalSubmissions</h3>
+                                        <p class="text-muted mb-0">Здано робіт</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h3>@ViewBag.StudentsCount</h3>
+                                        <p class="text-muted mb-0">Студентів у групі</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

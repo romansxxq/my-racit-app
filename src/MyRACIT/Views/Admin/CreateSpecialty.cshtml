@@ -1,0 +1,46 @@
+@model MyRACIT.Models.Entities.Specialty
+
+@{
+    ViewData["Title"] = "Створити спеціальність";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нової спеціальності</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateSpecialty" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Code" class="form-label">Код спеціальності <span class="text-danger">*</span></label>
+                        <input asp-for="Code" class="form-control" placeholder="Наприклад: 121" maxlength="10" />
+                        <span asp-validation-for="Code" class="text-danger"></span>
+                        <div class="form-text">Введіть код спеціальності (цифри)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Назва спеціальності <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="Наприклад: Інженерія програмного забезпечення" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Specialties" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

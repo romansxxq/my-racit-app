@@ -255,11 +255,6 @@ namespace MyRACIT.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "Email", "Name", "PasswordHash", "Role" },
-                values: new object[] { 1, "admin@myracit.edu.com", "admin", "admin123", "Admin" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Assignments_CourseId",
                 table: "Assignments",

@@ -1,0 +1,40 @@
+@model MyRACIT.Models.Entities.Department
+
+@{
+    ViewData["Title"] = "Створити кафедру";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нової кафедри</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateDepartment" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Назва кафедри <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="Наприклад: Кафедра програмування" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <div class="form-text">Введіть повну назву кафедри</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Departments" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

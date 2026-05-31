@@ -1,0 +1,123 @@
+@model MyRACIT.Models.Entities.Submission
+
+@{
+    ViewData["Title"] = "Деталі здачі";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Submissions">Здачі</a></li>
+                <li class="breadcrumb-item active">Деталі</li>
+            </ol>
+        </nav>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">📄 Деталі здачі роботи</h4>
+                <a asp-action="Submissions" class="btn btn-light btn-sm">⬅️ Назад</a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Студент</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>ПІБ:</th>
+                                <td><strong>@Model.Student?.User?.Name</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Email:</th>
+                                <td>@Model.Student?.User?.Email</td>
+                            </tr>
+                            <tr>
+                                <th>Група:</th>
+                                <td><span class="badge bg-info">@Model.Student?.Group?.Name</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>Завдання</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th>Назва:</th>
+                                <td><strong>@Model.Assignment?.Title</strong></td>
+                            </tr>
+                            <tr>
+                                <th>Дедлайн:</th>
+                                <td>@Model.Assignment?.Deadline.ToString("dd.MM.yyyy HH:mm")</td>
+                            </tr>
+                            <tr>
+                                <th>Здано:</th>
+                                <td>
+                                    @Model.SubmittedAt.ToString("dd.MM.yyyy HH:mm")
+                                    @if (Model.SubmittedAt > Model.Assignment?.Deadline)
+                                    {
+                                        <span class="badge bg-danger ms-1">Прострочено</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success ms-1">Вчасно</span>
+                                    }
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Макс. бал:</th>
+                                <td><strong>@Model.Assignment?.MaxGrade</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <hr />
+                
+                <div class="mb-4">
+                    <h5>Текст роботи</h5>
+                    <div class="border rounded p-3 bg-light" style="white-space: pre-wrap;">@Model.Content</div>
+                </div>
+                
+                @if (!string.IsNullOrEmpty(Model.FilePath))
+                {
+                    <div class="mb-4">
+                        <h5>Прикріплені файли</h5>
+                        <a href="@Model.FilePath" class="btn btn-primary" download>
+                            📎 Завантажити файл
+                        </a>
+                    </div>
+                }
+                
+                <hr />
+                
+                @if (Model.Grade != null)
+                {
+                    <div class="alert alert-success">
+                        <h5>✅ Робота оцінена</h5>
+                        <p><strong>Оцінка:</strong> @Model.Grade.Value / @Model.Assignment?.MaxGrade</p>
+                        <p><strong>Дата оцінювання:</strong> @Model.Grade.DateIssued.ToString("dd.MM.yyyy HH:mm")</p>
+                        @if (!string.IsNullOrEmpty(Model.Grade.Comment))
+                        {
+                            <p><strong>Коментар викладача:</strong></p>
+                            <p class="mb-0">@Model.Grade.Comment</p>
+                        }
+                        <div class="mt-2">
+                            <a asp-action="EditGrade" asp-route-submissionId="@Model.Id" class="btn btn-warning btn-sm">
+                                ✏️ Змінити оцінку
+                            </a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-warning">
+                        <h5>⚠️ Робота очікує оцінювання</h5>
+                        <a asp-action="GradeSubmission" asp-route-id="@Model.Id" class="btn btn-success">
+                            ⭐ Оцінити роботу
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

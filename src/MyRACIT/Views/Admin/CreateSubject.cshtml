@@ -1,0 +1,40 @@
+@model MyRACIT.Models.Entities.Subject
+
+@{
+    ViewData["Title"] = "Створити предмет";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">➕ Створення нового предмета</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateSubject" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                    
+                    <div class="mb-3">
+                        <label asp-for="Title" class="form-label">Назва предмета <span class="text-danger">*</span></label>
+                        <input asp-for="Title" class="form-control" placeholder="Наприклад: Основи програмування" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <div class="form-text">Введіть назву предмета</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a asp-action="Subjects" class="btn btn-secondary">
+                            ⬅️ Скасувати
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            💾 Зберегти
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
