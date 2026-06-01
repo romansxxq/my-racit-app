@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.Submission
+﻿@model MyRACIT.Models.Entities.Submission
 
 @{
     ViewData["Title"] = "Деталі здачі";
@@ -16,8 +16,8 @@
         
         <div class="card">
             <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">📄 Деталі здачі роботи</h4>
-                <a asp-action="Submissions" class="btn btn-light btn-sm">⬅️ Назад</a>
+                <h4 class="mb-0">Деталі здачі роботи</h4>
+                <a asp-action="Submissions" class="btn btn-light btn-sm"> Назад</a>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -83,7 +83,7 @@
                     <div class="mb-4">
                         <h5>Прикріплені файли</h5>
                         <a href="@Model.FilePath" class="btn btn-primary" download>
-                            📎 Завантажити файл
+                             Завантажити файл
                         </a>
                     </div>
                 }
@@ -93,7 +93,7 @@
                 @if (Model.Grade != null)
                 {
                     <div class="alert alert-success">
-                        <h5>✅ Робота оцінена</h5>
+                        <h5>Робота оцінена</h5>
                         <p><strong>Оцінка:</strong> @Model.Grade.Value / @Model.Assignment?.MaxGrade</p>
                         <p><strong>Дата оцінювання:</strong> @Model.Grade.DateIssued.ToString("dd.MM.yyyy HH:mm")</p>
                         @if (!string.IsNullOrEmpty(Model.Grade.Comment))
@@ -103,7 +103,7 @@
                         }
                         <div class="mt-2">
                             <a asp-action="EditGrade" asp-route-submissionId="@Model.Id" class="btn btn-warning btn-sm">
-                                ✏️ Змінити оцінку
+                                Змінити оцінку
                             </a>
                         </div>
                     </div>
@@ -111,9 +111,9 @@
                 else
                 {
                     <div class="alert alert-warning">
-                        <h5>⚠️ Робота очікує оцінювання</h5>
+                        <h5>Робота очікує оцінювання</h5>
                         <a asp-action="GradeSubmission" asp-route-id="@Model.Id" class="btn btn-success">
-                            ⭐ Оцінити роботу
+                            Оцінити роботу
                         </a>
                     </div>
                 }

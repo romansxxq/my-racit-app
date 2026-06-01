@@ -1,4 +1,4 @@
-@model MyRACIT.Models.Entities.Submission
+﻿@model MyRACIT.Models.Entities.Submission
 
 @{
     ViewData["Title"] = "Перегляд здачі";
@@ -9,15 +9,15 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
-                <li class="breadcrumb-item"><a asp-action="MySubmissions">Мої здачі</a></li>
+                <li class="breadcrumb-item"><a asp-action="MySubmissions" asp-route-courseId="@ViewBag.CourseId">Мої здачі</a></li>
                 <li class="breadcrumb-item active">Деталі</li>
             </ol>
         </nav>
         
         <div class="card">
             <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">📄 Моя здана робота</h4>
-                <a asp-action="MySubmissions" class="btn btn-light btn-sm">⬅️ Назад</a>
+                <h4 class="mb-0">Моя здана робота</h4>
+                <a asp-action="MySubmissions" asp-route-courseId="@ViewBag.CourseId" class="btn btn-light btn-sm">Назад</a>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -96,7 +96,7 @@
                     <div class="mb-4">
                         <h5>Прикріплений файл</h5>
                         <a href="@Model.FilePath" class="btn btn-primary" download>
-                            📎 Завантажити файл
+                            Завантажити файл
                         </a>
                     </div>
                 }
@@ -110,7 +110,7 @@
                     var badgeClass = percentage >= 75 ? "bg-success" : percentage >= 50 ? "bg-warning" : "bg-danger";
                     
                     <div class="alert @alertClass">
-                        <h5>✅ Робота оцінена</h5>
+                        <h5> Робота оцінена</h5>
                         <p>
                             <strong>Оцінка:</strong> 
                             <span class="badge @badgeClass fs-5">@Model.Grade.Value / @Model.Assignment?.MaxGrade</span>
@@ -128,7 +128,7 @@
                 else
                 {
                     <div class="alert alert-warning">
-                        <h5>⏳ Робота очікує оцінювання</h5>
+                        <h5> Робота очікує оцінювання</h5>
                         <p class="mb-0">Викладач ще не перевірив вашу роботу. Очікуйте оцінку.</p>
                     </div>
                 }

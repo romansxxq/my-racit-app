@@ -1,27 +1,29 @@
-@model IEnumerable<MyRACIT.Models.Entities.Assignment>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Assignment>
 
 @{
     ViewData["Title"] = "Завдання курсу";
     var courseId = ViewBag.CourseId as int?;
     var courseName = ViewBag.CourseName as string;
+    var mySubmissions = ViewBag.MySubmissions as Dictionary<int, MyRACIT.Models.Entities.Submission>;
 }
 
 <div class="row mb-3">
     <div class="col">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a asp-action="Index">Мої курси</a></li>
+                <li class="breadcrumb-item"><a asp-action="Index">Профіль</a></li>
+                <li class="breadcrumb-item"><a asp-action="MyCourses">Курси</a></li>
                 <li class="breadcrumb-item active">@courseName</li>
             </ol>
         </nav>
-        <h2>📝 Завдання курсу</h2>
+        <h2> Завдання курсу: @courseName</h2>
     </div>
 </div>
 
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> Завдання відсутні.
+        <strong> Інформація:</strong> Завдання відсутні.
     </div>
 }
 else
@@ -29,9 +31,9 @@ else
     <div class="row">
         @foreach (var assignment in Model)
         {
-            var mySubmission = ViewBag.GetMySubmission(assignment.Id);
-            var hasSubmission = mySubmission != null;
-            var isGraded = hasSubmission && mySubmission.Grade != null;
+            var hasSubmission = mySubmissions != null && mySubmissions.ContainsKey(assignment.Id);
+            var mySubmission = hasSubmission ? mySubmissions![assignment.Id] : null;
+            var isGraded = hasSubmission && mySubmission?.Grade != null;
             var isOverdue = assignment.Deadline < DateTime.Now;
             var canSubmit = !hasSubmission && !isOverdue;
             
@@ -71,16 +73,16 @@ else
                                 
                                 @if (isGraded)
                                 {
-                                    var grade = mySubmission.Grade;
+                                    var grade = mySubmission!.Grade!;
                                     var percentage = (double)grade.Value / assignment.MaxGrade * 100;
                                     var badgeClass = percentage >= 75 ? "bg-success" : percentage >= 50 ? "bg-warning" : "bg-danger";
                                     
                                     <div class="mt-3 alert alert-success">
                                         <strong>Ваша оцінка:</strong> 
                                         <span class="badge @badgeClass">@grade.Value / @assignment.MaxGrade</span>
-                                        @if (!string.IsNullOrEmpty(grade.Comment))
+                                        @if (!string.IsNullOrEmpty(grade.Feedback))
                                         {
-                                            <p class="mb-0 mt-2"><strong>Коментар викладача:</strong> @grade.Comment</p>
+                                            <p class="mb-0 mt-2"><strong>Коментар викладача:</strong> @grade.Feedback</p>
                                         }
                                     </div>
                                 }
@@ -90,30 +92,30 @@ else
                                 {
                                     <a asp-action="SubmitAssignment" asp-route-id="@assignment.Id" 
                                        class="btn btn-success">
-                                        📤 Здати роботу
+                                        Здати роботу
                                     </a>
                                 }
-                                else if (hasSubmission && !isGraded)
+                                else if (mySubmission != null && mySubmission.Grade == null)
                                 {
                                     <button class="btn btn-secondary" disabled>
-                                        ⏳ Очікує оцінки
+                                        Очікує оцінки
                                     </button>
-                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission.Id" 
+                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission!.Id"
                                        class="btn btn-info btn-sm mt-2">
-                                        👁️ Переглянути здачу
+                                        Переглянути здачу
                                     </a>
                                 }
                                 else if (isGraded)
                                 {
-                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission.Id" 
+                                    <a asp-action="ViewSubmission" asp-route-id="@mySubmission!.Id" 
                                        class="btn btn-info">
-                                        👁️ Переглянути здачу
+                                        Переглянути здачу
                                     </a>
                                 }
-                                else if (isOverdue)
+                                else
                                 {
                                     <button class="btn btn-danger" disabled>
-                                        ❌ Прострочено
+                                        Прострочено
                                     </button>
                                 }
                             </div>

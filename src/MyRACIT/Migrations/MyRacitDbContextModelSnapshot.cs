@@ -40,14 +40,19 @@ namespace MyRACIT.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
                     b.Property<int>("MaxGrade")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -178,15 +183,13 @@ namespace MyRACIT.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Feedback")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
 
-                    b.Property<int>("StudentId")
+                    b.Property<int>("GradedBy")
                         .HasColumnType("int");
 
                     b.Property<int>("SubmissionId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SubmissionId1")
                         .HasColumnType("int");
 
                     b.Property<int>("Value")
@@ -194,13 +197,10 @@ namespace MyRACIT.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("GradedBy");
 
-                    b.HasIndex("SubmissionId");
-
-                    b.HasIndex("SubmissionId1")
-                        .IsUnique()
-                        .HasFilter("[SubmissionId1] IS NOT NULL");
+                    b.HasIndex("SubmissionId")
+                        .IsUnique();
 
                     b.ToTable("Grades");
                 });
@@ -306,8 +306,11 @@ namespace MyRACIT.Migrations
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("FilePath")
+                    b.Property<string>("Content")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FilePath")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("StudentId")
@@ -403,7 +406,7 @@ namespace MyRACIT.Migrations
             modelBuilder.Entity("MyRACIT.Models.Entities.AssignmentFile", b =>
                 {
                     b.HasOne("MyRACIT.Models.Entities.Assignment", "Assignment")
-                        .WithMany()
+                        .WithMany("Files")
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -414,7 +417,7 @@ namespace MyRACIT.Migrations
             modelBuilder.Entity("MyRACIT.Models.Entities.AssignmentLink", b =>
                 {
                     b.HasOne("MyRACIT.Models.Entities.Assignment", "Assignment")
-                        .WithMany()
+                        .WithMany("Links")
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,23 +454,19 @@ namespace MyRACIT.Migrations
 
             modelBuilder.Entity("MyRACIT.Models.Entities.Grade", b =>
                 {
-                    b.HasOne("MyRACIT.Models.Entities.StudentProfile", "Student")
+                    b.HasOne("MyRACIT.Models.Entities.TeacherProfile", "GradedByTeacher")
                         .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyRACIT.Models.Entities.Submission", "Submission")
-                        .WithMany()
-                        .HasForeignKey("SubmissionId")
+                        .HasForeignKey("GradedBy")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MyRACIT.Models.Entities.Submission", null)
+                    b.HasOne("MyRACIT.Models.Entities.Submission", "Submission")
                         .WithOne("Grade")
-                        .HasForeignKey("MyRACIT.Models.Entities.Grade", "SubmissionId1");
+                        .HasForeignKey("MyRACIT.Models.Entities.Grade", "SubmissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Student");
+                    b.Navigation("GradedByTeacher");
 
                     b.Navigation("Submission");
                 });
@@ -505,7 +504,7 @@ namespace MyRACIT.Migrations
             modelBuilder.Entity("MyRACIT.Models.Entities.Submission", b =>
                 {
                     b.HasOne("MyRACIT.Models.Entities.Assignment", "Assignment")
-                        .WithMany()
+                        .WithMany("Submissions")
                         .HasForeignKey("AssignmentId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -538,6 +537,15 @@ namespace MyRACIT.Migrations
                     b.Navigation("Department");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyRACIT.Models.Entities.Assignment", b =>
+                {
+                    b.Navigation("Files");
+
+                    b.Navigation("Links");
+
+                    b.Navigation("Submissions");
                 });
 
             modelBuilder.Entity("MyRACIT.Models.Entities.Submission", b =>

@@ -2,19 +2,23 @@
 
 @{
     ViewData["Title"] = "Мої курси";
+
+    var getCourseAssignments = ViewBag.GetCourseAssignments as Func<int, int> ?? (_ => 0);
+    var getCourseSubmissions = ViewBag.GetCourseSubmissions as Func<int, int> ?? (_ => 0);
+    var getStudentsCount = ViewBag.GetStudentsCount as Func<int, int> ?? (_ => 0);
 }
 
 <div class="row mb-3">
     <div class="col">
-        <h2>📚 Мої курси</h2>
+        <h2>Мої курси</h2>
         <p class="text-muted">Курси, які ви викладаєте</p>
     </div>
 </div>
 
-@if (!Model.Any())
+@if (Model == null || !Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> У вас поки немає призначених курсів.
+        <strong>Інформація:</strong> У вас поки немає призначених курсів.
     </div>
 }
 else
@@ -36,28 +40,25 @@ else
                         
                         <div class="row text-center">
                             <div class="col-4">
-                                <h4>@ViewBag.GetCourseAssignments(course.Id)</h4>
+                                <h4>@getCourseAssignments(course.Id)</h4>
                                 <small class="text-muted">Завдань</small>
                             </div>
                             <div class="col-4">
-                                <h4>@ViewBag.GetCourseSubmissions(course.Id)</h4>
+                                <h4>@getCourseSubmissions(course.Id)</h4>
                                 <small class="text-muted">Здач</small>
                             </div>
                             <div class="col-4">
-                                <h4>@ViewBag.GetStudentsCount(course.GroupId)</h4>
+                                <h4>@getStudentsCount(course.GroupId)</h4>
                                 <small class="text-muted">Студентів</small>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer bg-light">
                         <a asp-action="CourseDetails" asp-route-id="@course.Id" class="btn btn-sm btn-primary">
-                            📖 Деталі курсу
+                            Деталі курсу
                         </a>
                         <a asp-action="Assignments" asp-route-courseId="@course.Id" class="btn btn-sm btn-success">
-                            📝 Завдання
-                        </a>
-                        <a asp-action="Submissions" asp-route-courseId="@course.Id" class="btn btn-sm btn-info">
-                            📬 Здачі
+                            Завдання
                         </a>
                     </div>
                 </div>

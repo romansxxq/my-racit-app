@@ -30,35 +30,76 @@ namespace MyRACIT.Data
                 // Перевірка чи база вже наповнена
                 if (await _context.Users.AnyAsync())
                 {
-                    _logger.LogInformation("База даних вже містить дані. Seeding пропущено.");
+                    _logger.LogInformation("База даних вже містить дані користувачів.");
+                    
+                    // Видаляємо тільки завдання зі старою 100-бальною системою
+                    var oldAssignments = await _context.Assignments.Where(a => a.MaxGrade > 5).ToListAsync();
+                    if (oldAssignments.Any())
+                    {
+                        _logger.LogInformation($"Видалення {oldAssignments.Count} старих завдань для оновлення системи оцінювання...");
+                        
+                        // Спочатку видаляємо пов'язані оцінки та здачі
+                        var assignmentIds = oldAssignments.Select(a => a.Id).ToList();
+                        var oldSubmissions = await _context.Submissions
+                            .Where(s => assignmentIds.Contains(s.AssignmentId))
+                            .ToListAsync();
+                        
+                        if (oldSubmissions.Any())
+                        {
+                            var submissionIds = oldSubmissions.Select(s => s.Id).ToList();
+                            var oldGrades = await _context.Grades
+                                .Where(g => submissionIds.Contains(g.SubmissionId))
+                                .ToListAsync();
+                            
+                            _context.Grades.RemoveRange(oldGrades);
+                            _context.Submissions.RemoveRange(oldSubmissions);
+                        }
+                        
+                        _context.Assignments.RemoveRange(oldAssignments);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("Старі завдання видалено");
+                    }
+                    
+                    // Перевіряємо чи є достатньо завдань (менше 3 означає потрібно додати)
+                    var assignmentsCount = await _context.Assignments.CountAsync();
+                    if (assignmentsCount < 3)
+                    {
+                        _logger.LogInformation($"Знайдено {assignmentsCount} завдань. Додаємо тестові завдання...");
+                        await SeedAssignmentsForExistingCoursesAsync();
+                    }
+                    else
+                    {
+                        _logger.LogInformation($"База містить {assignmentsCount} завдань з 5-бальною системою.");
+                    }
+                    
                     return;
                 }
 
                 _logger.LogInformation("Початок наповнення бази даних...");
 
-                // 1. Створення кафедр
+                //Створення кафедр
                 await SeedDepartmentsAsync();
 
-                // 2. Створення спеціальностей
+                //Створення спеціальностей
                 await SeedSpecialtiesAsync();
 
-                // 3. Створення груп
+                //Створення груп
                 await SeedGroupsAsync();
 
-                // 4. Створення предметів
+                //Створення предметів
                 await SeedSubjectsAsync();
 
-                // 5. Створення користувачів (Admin, Teachers, Students)
+                //Створення користувачів (Admin, Teachers, Students)
                 await SeedUsersAsync();
 
-                // 6. Створення курсів
+                //Створення курсів
                 await SeedCoursesAsync();
 
-                _logger.LogInformation("✅ База даних успішно наповнена!");
+                _logger.LogInformation("База даних успішно наповнена!");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ Помилка при наповненні бази даних");
+                _logger.LogError(ex, "Помилка при наповненні бази даних");
                 throw;
             }
         }
@@ -74,7 +115,7 @@ namespace MyRACIT.Data
 
             await _context.Departments.AddRangeAsync(departments);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("✅ Створено {Count} кафедр", departments.Length);
+            _logger.LogInformation("Створено {Count} кафедр", departments.Length);
         }
 
         private async Task SeedSpecialtiesAsync()
@@ -88,7 +129,7 @@ namespace MyRACIT.Data
 
             await _context.Specialties.AddRangeAsync(specialties);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("✅ Створено {Count} спеціальностей", specialties.Length);
+            _logger.LogInformation("Створено {Count} спеціальностей", specialties.Length);
         }
 
         private async Task SeedGroupsAsync()
@@ -106,7 +147,7 @@ namespace MyRACIT.Data
 
             await _context.Groups.AddRangeAsync(groups);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("✅ Створено {Count} груп", groups.Length);
+            _logger.LogInformation("Створено {Count} груп", groups.Length);
         }
 
         private async Task SeedSubjectsAsync()
@@ -122,7 +163,7 @@ namespace MyRACIT.Data
 
             await _context.Subjects.AddRangeAsync(subjects);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("✅ Створено {Count} предметів", subjects.Length);
+            _logger.LogInformation("Створено {Count} предметів", subjects.Length);
         }
 
         private async Task SeedUsersAsync()
@@ -133,7 +174,7 @@ namespace MyRACIT.Data
                 "admin@rfkit.edu.ua",
                 "Admin123"
             );
-            _logger.LogInformation("✅ Створено адміністратора: admin@rfkit.edu.ua / Admin123");
+            _logger.LogInformation("Створено адміністратора: admin@rfkit.edu.ua / Admin123");
 
             // 2. Викладачі
             var itDepartment = await _context.Departments.FirstAsync(d => d.Name.Contains("інформаційних технологій"));
@@ -160,7 +201,7 @@ namespace MyRACIT.Data
                 itDepartment.Id
             );
 
-            _logger.LogInformation("✅ Створено 3 викладачів");
+            _logger.LogInformation("Створено 3 викладачів");
 
             // 3. Студенти
             var ipz21Group = await _context.Groups.FirstAsync(g => g.Name == "ІПЗ-21");
@@ -182,7 +223,7 @@ namespace MyRACIT.Data
                 await _userService.CreateStudentAsync(name, email, "Student123", groupId);
             }
 
-            _logger.LogInformation("✅ Створено {Count} студентів (пароль: Student123)", students.Length);
+            _logger.LogInformation("Створено {Count} студентів (пароль: Student123)", students.Length);
         }
 
         private async Task SeedCoursesAsync()
@@ -191,9 +232,9 @@ namespace MyRACIT.Data
             var dbSubject = await _context.Subjects.FirstAsync(s => s.Title.Contains("Бази даних"));
             var webSubject = await _context.Subjects.FirstAsync(s => s.Title.Contains("Веб-розробка"));
 
-            var teacher1 = await _context.TeacherProfiles.FirstAsync(t => t.User.Email == "teacher@rfkit.edu.ua");
-            var teacher2 = await _context.TeacherProfiles.FirstAsync(t => t.User.Email == "petrenko@rfkit.edu.ua");
-            var teacher3 = await _context.TeacherProfiles.FirstAsync(t => t.User.Email == "sydorenko@rfkit.edu.ua");
+            var teacher1 = await _context.TeacherProfiles.Include(t => t.User).FirstAsync(t => t.User!.Email == "teacher@rfkit.edu.ua");
+            var teacher2 = await _context.TeacherProfiles.Include(t => t.User).FirstAsync(t => t.User!.Email == "petrenko@rfkit.edu.ua");
+            var teacher3 = await _context.TeacherProfiles.Include(t => t.User).FirstAsync(t => t.User!.Email == "sydorenko@rfkit.edu.ua");
 
             var ipz21Group = await _context.Groups.FirstAsync(g => g.Name == "ІПЗ-21");
             var ipz22Group = await _context.Groups.FirstAsync(g => g.Name == "ІПЗ-22");
@@ -237,7 +278,7 @@ namespace MyRACIT.Data
 
             await _context.Courses.AddRangeAsync(courses);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("✅ Створено {Count} курсів", courses.Length);
+            _logger.LogInformation("Створено {Count} курсів", courses.Length);
 
             // Додамо тестові завдання для першого курсу
             var firstCourse = courses[0];
@@ -249,7 +290,19 @@ namespace MyRACIT.Data
                     Title = "Лабораторна робота №1: Основи C#",
                     Description = "Створіть консольний додаток з використанням базових конструкцій C#",
                     Deadline = DateTime.Now.AddDays(14),
-                    MaxGrade = 5
+                    MaxGrade = 5,
+                    Type = AssignmentType.Lab,
+                    CreatedAt = DateTime.Now
+                },
+                new Assignment
+                {
+                    CourseId = firstCourse.Id,
+                    Title = "Домашнє завдання №1: Змінні та типи даних",
+                    Description = "Виконайте вправи на роботу зі змінними",
+                    Deadline = DateTime.Now.AddDays(7),
+                    MaxGrade = 5,
+                    Type = AssignmentType.Homework,
+                    CreatedAt = DateTime.Now
                 },
                 new Assignment
                 {
@@ -257,13 +310,98 @@ namespace MyRACIT.Data
                     Title = "Лабораторна робота №2: ООП в C#",
                     Description = "Розробіть класову модель для предметної області",
                     Deadline = DateTime.Now.AddDays(21),
-                    MaxGrade = 5
+                    MaxGrade = 5,
+                    Type = AssignmentType.Lab,
+                    CreatedAt = DateTime.Now
+                },
+                new Assignment
+                {
+                    CourseId = firstCourse.Id,
+                    Title = "Проєкт: Розробка веб-застосунку",
+                    Description = "Створіть повнофункціональний веб-застосунок з використанням ASP.NET Core",
+                    Deadline = DateTime.Now.AddDays(60),
+                    MaxGrade = 5,
+                    Type = AssignmentType.Project,
+                    CreatedAt = DateTime.Now
                 }
             };
 
             await _context.Assignments.AddRangeAsync(assignments);
             await _context.SaveChangesAsync();
-            _logger.LogInformation("✅ Створено {Count} завдань", assignments.Length);
+            _logger.LogInformation("Створено {Count} завдань", assignments.Length);
+        }
+
+        /// <summary>
+        /// Додає тестові завдання до існуючих курсів
+        /// </summary>
+        private async Task SeedAssignmentsForExistingCoursesAsync()
+        {
+            // Знаходимо курс для групи ІПЗ-21 (до якої належить тестовий студент)
+            var ipz21Group = await _context.Groups.FirstOrDefaultAsync(g => g.Name == "ІПЗ-21");
+            if (ipz21Group == null)
+            {
+                _logger.LogWarning("Група ІПЗ-21 не знайдена. Завдання не додано.");
+                return;
+            }
+            
+            var firstCourse = await _context.Courses
+                .Include(c => c.Subject)
+                .FirstOrDefaultAsync(c => c.GroupId == ipz21Group.Id);
+            if (firstCourse == null)
+            {
+                _logger.LogWarning("Курси для групи ІПЗ-21 не знайдені. Завдання не додано.");
+                return;
+            }
+            
+            _logger.LogInformation($"Додаємо завдання до курсу '{firstCourse.Subject?.Title}' для групи ІПЗ-21");
+
+            var assignments = new[]
+            {
+                new Assignment
+                {
+                    CourseId = firstCourse.Id,
+                    Title = "Лабораторна робота №1: Основи C#",
+                    Description = "Створіть консольний додаток з використанням базових конструкцій C#",
+                    Deadline = DateTime.Now.AddDays(14),
+                    MaxGrade = 5,
+                    Type = AssignmentType.Lab,
+                    CreatedAt = DateTime.Now
+                },
+                new Assignment
+                {
+                    CourseId = firstCourse.Id,
+                    Title = "Домашнє завдання №1: Змінні та типи даних",
+                    Description = "Виконайте вправи на роботу зі змінними",
+                    Deadline = DateTime.Now.AddDays(7),
+                    MaxGrade = 5,
+                    Type = AssignmentType.Homework,
+                    CreatedAt = DateTime.Now
+                },
+                new Assignment
+                {
+                    CourseId = firstCourse.Id,
+                    Title = "Лабораторна робота №2: ООП в C#",
+                    Description = "Розробіть класову модель для предметної області",
+                    Deadline = DateTime.Now.AddDays(21),
+                    MaxGrade = 5,
+                    Type = AssignmentType.Lab,
+                    CreatedAt = DateTime.Now
+                },
+                new Assignment
+                {
+                    CourseId = firstCourse.Id,
+                    Title = "Проєкт: Розробка веб-застосунку",
+                    Description = "Створіть повнофункціональний веб-застосунок з використанням ASP.NET Core",
+                    Deadline = DateTime.Now.AddDays(60),
+                    MaxGrade = 5,
+                    Type = AssignmentType.Project,
+                    CreatedAt = DateTime.Now
+                }
+            };
+
+            await _context.Assignments.AddRangeAsync(assignments);
+            await _context.SaveChangesAsync();
+            _logger.LogInformation("Додано {Count} тестових завдань до існуючого курсу", assignments.Length);
         }
     }
 }

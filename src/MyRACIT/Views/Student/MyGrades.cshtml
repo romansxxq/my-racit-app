@@ -1,4 +1,4 @@
-@model IEnumerable<MyRACIT.Models.Entities.Grade>
+﻿@model IEnumerable<MyRACIT.Models.Entities.Grade>
 
 @{
     ViewData["Title"] = "Мої оцінки";
@@ -8,7 +8,7 @@
 
 <div class="row mb-3">
     <div class="col">
-        <h2>⭐ Мої оцінки</h2>
+        <h2> Мої оцінки</h2>
         @if (!string.IsNullOrEmpty(courseName))
         {
             <p class="text-muted">Курс: <strong>@courseName</strong></p>
@@ -19,14 +19,14 @@
         }
     </div>
     <div class="col text-end">
-        <a asp-action="Index" class="btn btn-secondary">⬅️ До курсів</a>
+        <a asp-action="Index" class="btn btn-secondary">До курсів</a>
     </div>
 </div>
 
 @if (!Model.Any())
 {
     <div class="alert alert-info">
-        <strong>ℹ️ Інформація:</strong> У вас поки немає оцінок.
+        <strong> Інформація:</strong> У вас поки немає оцінок.
     </div>
 }
 else
@@ -36,7 +36,7 @@ else
             <table class="table table-hover">
                 <thead class="table-light">
                     <tr>
-                        <th>№</th>
+                        <th></th>
                         <th>Курс</th>
                         <th>Завдання</th>
                         <th>Оцінка</th>
@@ -81,7 +81,7 @@ else
                             <td>
                                 <a asp-action="ViewSubmission" asp-route-id="@grade.SubmissionId" 
                                    class="btn btn-sm btn-info" title="Переглянути">
-                                    👁️
+                                    
                                 </a>
                             </td>
                         </tr>
@@ -122,7 +122,7 @@ else
                 <div class="card bg-light">
                     <div class="card-body text-center">
                         @{
-                            var avgPercentage = Model.Average(g => (double)g.Value / g.Submission.Assignment.MaxGrade * 100);
+                            var avgPercentage = Model.Average(g => (double)g.Value / (g.Submission?.Assignment?.MaxGrade ?? 1) * 100);
                         }
                         <h4>@string.Format("{0:F1}", avgPercentage)%</h4>
                         <small class="text-muted">Середній %</small>

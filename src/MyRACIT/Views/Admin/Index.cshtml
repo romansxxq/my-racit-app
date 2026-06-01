@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Панель адміністратора";
 }
 
@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="alert alert-success">
-                <h2>🎉 Вітаємо в системі My RACIT!</h2>
+                <h2> Вітаємо в системі My RACIT!</h2>
                 <p class="lead">Ви успішно увійшли як <strong>@User.Identity?.Name</strong> з роллю <strong>@User.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value</strong></p>
             </div>
         </div>

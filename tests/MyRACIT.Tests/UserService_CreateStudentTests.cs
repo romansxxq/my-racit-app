@@ -1,5 +1,6 @@
 using MyRACIT.Data;
 using MyRACIT.Models.Entities;
+using MyRACIT.Models.Exceptions;
 using MyRACIT.Services;
 using MyRACIT.Tests.Helpers;
 
@@ -34,8 +35,8 @@ public class UserService_CreateStudentTests
 
         // Assert
         Assert.NotNull(profile);
-        Assert.Equal(group.Id, profile.GroupId);
-        Assert.Equal(UserRole.Student, profile.User.Role);
+        Assert.Equal(group.Id, profile!.GroupId);
+        Assert.Equal(UserRole.Student, profile.User!.Role);
     }
 
     [Fact]
@@ -46,7 +47,7 @@ public class UserService_CreateStudentTests
         var svc = new UserService(db);
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<GroupNotFoundException>(
             () => svc.CreateStudentAsync("Студент", "s@test.com", "pass", 9999));
     }
 
@@ -60,7 +61,7 @@ public class UserService_CreateStudentTests
         await svc.CreateStudentAsync("Перший", "dup.student@test.com", "pass", group.Id);
 
         // Act & Assert
-        await Assert.ThrowsAsync<InvalidOperationException>(
+        await Assert.ThrowsAsync<UserAlreadyExistsException>(
             () => svc.CreateStudentAsync("Другий", "dup.student@test.com", "pass2", group.Id));
     }
 }

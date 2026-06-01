@@ -50,7 +50,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "❌ Помилка при заповненні бази даних тестовими даними");
+        logger.LogError(ex, "Помилка при заповненні бази даних тестовими даними");
     }
 }
 
@@ -78,3 +78,5 @@ app.MapControllerRoute(
 
 
 app.Run();
+
+public partial class Program { }

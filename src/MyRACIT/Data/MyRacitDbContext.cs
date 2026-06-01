@@ -29,25 +29,31 @@ namespace MyRACIT.Data
 
             modelBuilder.Entity<Submission>()
                 .HasOne(s => s.Assignment)
-                .WithMany()
+                .WithMany(a => a.Submissions)
                 .HasForeignKey(s => s.AssignmentId)
                 .OnDelete(DeleteBehavior.Restrict); 
 
             modelBuilder.Entity<Grade>()
                 .HasOne(g => g.Submission)
+                .WithOne(s => s.Grade)
+                .HasForeignKey<Grade>(g => g.SubmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Grade>()
+                .HasOne(g => g.GradedByTeacher)
                 .WithMany()
-                .HasForeignKey(g => g.SubmissionId)
+                .HasForeignKey(g => g.GradedBy)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AssignmentFile>()
                 .HasOne(af => af.Assignment)
-                .WithMany()
+                .WithMany(a => a.Files)
                 .HasForeignKey(af => af.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<AssignmentLink>()
                 .HasOne(al => al.Assignment)
-                .WithMany()
+                .WithMany(a => a.Links)
                 .HasForeignKey(al => al.AssignmentId)
                 .OnDelete(DeleteBehavior.Cascade);
 

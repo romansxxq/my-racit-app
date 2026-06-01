@@ -8,8 +8,85 @@ html {
   }
 }
 
+/* ===== MY RACIT PURPLE THEME ===== */
+:root {
+    --racit-primary: #667eea;
+    --racit-secondary: #764ba2;
+    --racit-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Navbar gradient */
+.navbar.bg-primary {
+    background: var(--racit-gradient) !important;
+    box-shadow: 0 2px 15px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Cards — rounded + shadow */
+.card {
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+}
+
+/* Card headers — all use purple gradient */
+.card-header {
+    background: var(--racit-gradient) !important;
+    color: white !important;
+    border-radius: 12px 12px 0 0 !important;
+    border: none !important;
+}
+
+/* Statistics / bg-light cards */
+.card.bg-light {
+    background: white !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07) !important;
+    border: 1px solid #f0e8ff !important;
+}
+
+.card.bg-light h3 {
+    color: var(--racit-primary);
+    font-weight: bold;
+}
+
+/* Buttons — primary → gradient */
+.btn-primary {
+    background: var(--racit-gradient) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+/* btn-light in card headers */
+.card-header .btn-light {
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+}
+
+/* Form controls */
+.form-control:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Table rows hover */
+.table-hover tbody tr:hover {
+    background-color: rgba(102, 126, 234, 0.05) !important;
+}
+
+/* Badges */
+.badge.bg-info {
+    background-color: var(--racit-primary) !important;
+}
+
+/* ===== END THEME ===== */
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #667eea;
 }
 
 html {
