@@ -63,6 +63,16 @@ namespace MyRACIT.Models.Entities
             set => MaxGrade = value;
         }
 
+        [NotMapped]
+        public AssignmentFile? this[int index]
+        {
+            get
+            {
+                var list = Files as List<AssignmentFile> ?? new List<AssignmentFile>(Files);
+                return index >= 0 && index < list.Count ? list[index] : null;
+            }
+        }
+
         public override string ToString() => $"{Title} (Група: {Course?.Group?.Name})";
     }
     
