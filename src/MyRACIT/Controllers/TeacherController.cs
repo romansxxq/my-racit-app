@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyRACIT.Data;
 using MyRACIT.Models.Entities;
+using MyRACIT.Services.FileValidation;
 using MyRACIT.Services.Interfaces;
 using System.Security.Claims;
 
@@ -16,10 +17,8 @@ namespace MyRACIT.Controllers
     {
         private readonly MyRacitDbContext _context;
         private readonly IFileStorageService _fileStorage;
+        private readonly IFileValidationStrategy _fileValidator = new AssignmentFileValidator();
 
-        private static readonly HashSet<string> AllowedFileExtensions =
-            new(StringComparer.OrdinalIgnoreCase) { ".pdf", ".docx", ".pptx" };
-        
         public TeacherController(MyRacitDbContext context, IFileStorageService fileStorage)
         {
             _context = context;
@@ -243,17 +242,13 @@ namespace MyRACIT.Controllers
             if (course == null)
                 return NotFound("Курс не знайдено");
 
-            // Validate uploaded file extensions before ModelState check
+            // Validate uploaded file extensions before ModelState check (Strategy Pattern)
             if (files != null)
             {
                 foreach (var file in files)
                 {
-                    var ext = Path.GetExtension(file.FileName);
-                    if (!AllowedFileExtensions.Contains(ext))
-                    {
-                        ModelState.AddModelError("files",
-                            $"Недозволений тип файлу '{file.FileName}'. Дозволено: PDF, DOCX, PPTX.");
-                    }
+                    if (!_fileValidator.IsValid(file, out var error))
+                        ModelState.AddModelError("files", error);
                 }
             }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyRACIT.Data;
 using MyRACIT.Models.Entities;
+using MyRACIT.Services.FileValidation;
 using System.Security.Claims;
 
 namespace MyRACIT.Controllers
@@ -14,7 +15,8 @@ namespace MyRACIT.Controllers
     public class StudentController : Controller
     {
         private readonly MyRacitDbContext _context;
-        
+        private readonly IFileValidationStrategy _fileValidator = new SubmissionFileValidator();
+
         public StudentController(MyRacitDbContext context)
         {
             _context = context;
@@ -310,13 +312,21 @@ namespace MyRACIT.Controllers
             string? savedFilePath = null;
             if (File != null && File.Length > 0)
             {
-                var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                Directory.CreateDirectory(uploadsDir);
-                var uniqueName = $"{Guid.NewGuid()}_{Path.GetFileName(File.FileName)}";
-                var fullPath = Path.Combine(uploadsDir, uniqueName);
-                using var stream = new FileStream(fullPath, FileMode.Create);
-                await File.CopyToAsync(stream);
-                savedFilePath = $"/uploads/{uniqueName}";
+                // Strategy Pattern — валідація за правилами для студентських робіт
+                if (!_fileValidator.IsValid(File, out var validationError))
+                {
+                    ModelState.AddModelError("", validationError);
+                }
+                else
+                {
+                    var uploadsDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                    Directory.CreateDirectory(uploadsDir);
+                    var uniqueName = $"{Guid.NewGuid()}_{Path.GetFileName(File.FileName)}";
+                    var fullPath = Path.Combine(uploadsDir, uniqueName);
+                    using var stream = new FileStream(fullPath, FileMode.Create);
+                    await File.CopyToAsync(stream);
+                    savedFilePath = $"/uploads/{uniqueName}";
+                }
             }
 
             // Перевірка: студент має або написати опис, або здати файл (або обидва)
