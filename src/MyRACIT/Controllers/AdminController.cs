@@ -23,8 +23,6 @@ namespace MyRACIT.Controllers
             _context = context;
         }
         
-        // ===== DASHBOARD =====
-        
         public async Task<IActionResult> Index()
         {
             ViewBag.TotalStudents = await _context.StudentProfiles.CountAsync();
@@ -35,8 +33,6 @@ namespace MyRACIT.Controllers
             
             return View();
         }
-        
-        // ===== UC1: КЕРУВАННЯ КАФЕДРАМИ =====
         
         // GET: Admin/Departments
         public async Task<IActionResult> Departments()
@@ -127,8 +123,6 @@ namespace MyRACIT.Controllers
             TempData["Success"] = "Кафедру видалено!";
             return RedirectToAction(nameof(Departments));
         }
-        
-        // ===== UC2: КЕРУВАННЯ СПЕЦІАЛЬНОСТЯМИ =====
         
         // GET: Admin/Specialties
         public async Task<IActionResult> Specialties()
@@ -509,9 +503,7 @@ namespace MyRACIT.Controllers
             ViewBag.AverageGrade = grades.Count > 0 ? Math.Round(grades.Average(), 1) : (double?)null;
             
             return View(student);
-        }
-        
-        // ===== UC6: КЕРУВАННЯ ВИКЛАДАЧАМИ =====
+        }       
         
         // GET: Admin/Teachers
         public async Task<IActionResult> Teachers()
@@ -596,8 +588,6 @@ namespace MyRACIT.Controllers
             
             return View(teacher);
         }
-        
-        // ===== UC7: КЕРУВАННЯ КУРСАМИ =====
         
         // GET: Admin/Courses
         public async Task<IActionResult> Courses()

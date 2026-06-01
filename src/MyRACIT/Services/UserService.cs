@@ -3,14 +3,13 @@ using MyRACIT.Data;
 using MyRACIT.Models.Entities;
 using MyRACIT.Models.Exceptions;
 using MyRACIT.Services.Interfaces;
-using System.Security.Cryptography;
-using System.Text;
+using MyRACIT.Services.UserCreation;
 
 namespace MyRACIT.Services
 {
     /// <summary>
-    /// Сервіс для управління користувачами системи
-    /// Реалізує Factory Method Pattern для створення користувачів різних ролей
+    /// Сервіс для управління користувачами системи.
+    /// Делегує створення користувачів до класів UserCreation (Template Method Pattern).
     /// </summary>
     public class UserService : IUserService
     {
@@ -26,50 +25,13 @@ namespace MyRACIT.Services
         /// </summary>
         public async Task<StudentProfile> CreateStudentAsync(string name, string email, string password, int groupId)
         {
-            // Перевірка унікальності email
-            if (await EmailExistsAsync(email))
-            {
-                throw new UserAlreadyExistsException(email);
-            }
-            
-            // Перевірка чи існує група
-            var group = await _context.Groups.FindAsync(groupId);
-            if (group == null)
-            {
-                throw new GroupNotFoundException(groupId);
-            }
-            
-            // Створюємо User
-            var user = new User
-            {
-                Name = name,
-                Email = email,
-                PasswordHash = HashPassword(password),
-                Role = UserRole.Student
-            };
-            
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            
-            // Створюємо StudentProfile
-            var studentProfile = new StudentProfile
-            {
-                UserId = user.Id,
-                GroupId = groupId
-            };
-            
-            _context.StudentProfiles.Add(studentProfile);
-            await _context.SaveChangesAsync();
-            
-            // Завантажуємо навігаційні властивості для повернення
-            await _context.Entry(studentProfile)
-                .Reference(s => s.User)
-                .LoadAsync();
-            await _context.Entry(studentProfile)
-                .Reference(s => s.Group)
-                .LoadAsync();
-            
-            return studentProfile;
+            var creator = new StudentCreator(_context, groupId);
+            var user = await creator.CreateAsync(name, email, password);
+
+            return await _context.StudentProfiles
+                .Include(s => s.User)
+                .Include(s => s.Group)
+                .FirstAsync(s => s.UserId == user.Id);
         }
         
         /// <summary>
@@ -77,50 +39,13 @@ namespace MyRACIT.Services
         /// </summary>
         public async Task<TeacherProfile> CreateTeacherAsync(string name, string email, string password, int departmentId)
         {
-            // Перевірка унікальності email
-            if (await EmailExistsAsync(email))
-            {
-                throw new UserAlreadyExistsException(email);
-            }
-            
-            // Перевірка чи існує кафедра
-            var department = await _context.Departments.FindAsync(departmentId);
-            if (department == null)
-            {
-                throw new DepartmentNotFoundException(departmentId);
-            }
-            
-            // Створюємо User
-            var user = new User
-            {
-                Name = name,
-                Email = email,
-                PasswordHash = HashPassword(password),
-                Role = UserRole.Teacher
-            };
-            
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            
-            // Створюємо TeacherProfile
-            var teacherProfile = new TeacherProfile
-            {
-                UserId = user.Id,
-                DepartmentId = departmentId
-            };
-            
-            _context.TeacherProfiles.Add(teacherProfile);
-            await _context.SaveChangesAsync();
-            
-            // Завантажуємо навігаційні властивості
-            await _context.Entry(teacherProfile)
-                .Reference(t => t.User)
-                .LoadAsync();
-            await _context.Entry(teacherProfile)
-                .Reference(t => t.Department)
-                .LoadAsync();
-            
-            return teacherProfile;
+            var creator = new TeacherCreator(_context, departmentId);
+            var user = await creator.CreateAsync(name, email, password);
+
+            return await _context.TeacherProfiles
+                .Include(t => t.User)
+                .Include(t => t.Department)
+                .FirstAsync(t => t.UserId == user.Id);
         }
         
         /// <summary>
@@ -128,24 +53,8 @@ namespace MyRACIT.Services
         /// </summary>
         public async Task<User> CreateAdminAsync(string name, string email, string password)
         {
-            // Перевірка унікальності email
-            if (await EmailExistsAsync(email))
-            {
-                throw new UserAlreadyExistsException(email);
-            }
-            
-            var user = new User
-            {
-                Name = name,
-                Email = email,
-                PasswordHash = HashPassword(password),
-                Role = UserRole.Admin
-            };
-            
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            
-            return user;
+            var creator = new AdminCreator(_context);
+            return await creator.CreateAsync(name, email, password);
         }
         
         /// <summary>
@@ -208,7 +117,7 @@ namespace MyRACIT.Services
                 return false;
             
             // Змінюємо на новий
-            user.PasswordHash = HashPassword(newPassword);
+            user.PasswordHash = UserCreatorBase.HashPassword(newPassword);
             await _context.SaveChangesAsync();
             
             return true;
@@ -284,25 +193,11 @@ namespace MyRACIT.Services
         // ===== PRIVATE METHODS =====
         
         /// <summary>
-        /// Хешує пароль за допомогою SHA256
-        /// TODO: Для production краще використати BCrypt або ASP.NET Identity
-        /// </summary>
-        private string HashPassword(string password)
-        {
-            using (var sha256 = SHA256.Create())
-            {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return Convert.ToBase64String(hashedBytes);
-            }
-        }
-        
-        /// <summary>
         /// Перевіряє чи співпадає пароль з хешем
         /// </summary>
-        private bool VerifyPassword(string password, string passwordHash)
+        private static bool VerifyPassword(string password, string passwordHash)
         {
-            var hashOfInput = HashPassword(password);
-            return hashOfInput == passwordHash;
+            return UserCreatorBase.HashPassword(password) == passwordHash;
         }
     }
 }
