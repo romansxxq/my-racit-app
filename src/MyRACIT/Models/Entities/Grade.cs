@@ -62,5 +62,22 @@ namespace MyRACIT.Models.Entities
 
 
         public override string ToString() => $"{Value} балів -> {Student?.User?.Name}";
+
+        public static bool operator ==(Grade? a, Grade? b)
+        {
+            if (a is null && b is null) return true;
+            if (a is null || b is null) return false;
+            return a.Value == b.Value;
+        }
+
+        public static bool operator !=(Grade? a, Grade? b) => !(a == b);
+
+        public static int operator +(Grade a, Grade b) => a.Value + b.Value;
+
+        public static bool operator >(Grade a, Grade b) => a.Value > b.Value;
+        public static bool operator <(Grade a, Grade b) => a.Value < b.Value;
+
+        public override bool Equals(object? obj) => obj is Grade g && g.Value == Value;
+        public override int GetHashCode() => Value.GetHashCode();
     }
 }

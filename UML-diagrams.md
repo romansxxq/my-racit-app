@@ -172,14 +172,26 @@ classDiagram
         +ToString() string
     }
     
+    class AssignmentType {
+        <<enumeration>>
+        Homework
+        Lab
+        Project
+        Test
+        Exam
+    }
+
     class Assignment {
         -int Id
         -string Title
         -string Description
         -DateTime Deadline
         -int MaxGrade
+        -AssignmentType Type
         -int CourseId
-        +Course Course
+        +ICollection~AssignmentFile~ Files
+        +ICollection~AssignmentLink~ Links
+        +this[int index] AssignmentFile?
         +ToString() string
     }
     
@@ -215,18 +227,27 @@ classDiagram
     
     class Grade {
         -int Id
-        -int StudentId
         -int SubmissionId
         -int Value
         -DateTime DateIssued
         -string Feedback
-        +StudentProfile Student
+        -int GradedBy
         +Submission Submission
+        +TeacherProfile GradedByTeacher
+        +operator==(Grade a, Grade b) bool
+        +operator!=(Grade a, Grade b) bool
+        +operator+(Grade a, Grade b) int
+        +operator>(Grade a, Grade b) bool
+        +operator<(Grade a, Grade b) bool
         +ToString() string
+        +Equals(object obj) bool
+        +GetHashCode() int
     }
     
     %% ============ RELATIONSHIPS ============
-    
+
+    Assignment --> AssignmentType : має тип
+
     %% User and Roles (Association)
     User --> UserRole : має роль
     
@@ -288,8 +309,11 @@ classDiagram
 - Assignment *-- Submission: подання не існує без завдання
 - Submission *-- Grade: оцінка не існує без конкретної зданої роботи
 
-**Наслідування (Inheritance)**: 
-- Не використовується в даній системі (всі класи незалежні)
+**Наслідування (Inheritance)**:
+- `RacitException` → `Exception` (базовий доменний виняток)
+- `UserAlreadyExistsException` → `RacitException`
+- `GroupNotFoundException` → `RacitException`
+- `DepartmentNotFoundException` → `RacitException`
 
 ### 2.4. Пояснення структури класів
 
@@ -1211,3 +1235,64 @@ graph TB
 ✅ **Maintainability** - зміни в одному шарі не впливають на інші
 ✅ **Scalability** - можна легко замінити File System на Cloud Storage
 ✅ **Security** - Authentication/Authorization на рівні Controllers
+
+## 12. Ієрархія винятків (Exception Hierarchy)
+
+### 12.1. Діаграма класів винятків
+
+```mermaid
+classDiagram
+    class Exception {
+        +string Message
+        +string StackTrace
+        +Exception InnerException
+    }
+
+    class RacitException {
+        +string Message
+        +RacitException(message)
+        +RacitException(message, inner)
+    }
+
+    class UserAlreadyExistsException {
+        +string Email
+        +UserAlreadyExistsException(email)
+    }
+
+    class GroupNotFoundException {
+        +int GroupId
+        +GroupNotFoundException(groupId)
+    }
+
+    class DepartmentNotFoundException {
+        +int DepartmentId
+        +DepartmentNotFoundException(departmentId)
+    }
+
+    Exception <|-- RacitException : extends
+    RacitException <|-- UserAlreadyExistsException : extends
+    RacitException <|-- GroupNotFoundException : extends
+    RacitException <|-- DepartmentNotFoundException : extends
+```
+
+### 12.2. Опис винятків
+
+| Клас | Властивість | Коли кидається |
+|------|------------|----------------|
+| `RacitException` | `Message` | Базовий доменний виняток, успадковується |
+| `UserAlreadyExistsException` | `Email` | При спробі зареєструвати email, що вже існує в БД |
+| `GroupNotFoundException` | `GroupId` | При зверненні до групи з неіснуючим `groupId` |
+| `DepartmentNotFoundException` | `DepartmentId` | При зверненні до кафедри з неіснуючим `departmentId` |
+
+### 12.3. Приклад використання
+
+```csharp
+// UserService.cs — кидає виняток при дублюванні email
+if (await EmailExistsAsync(email))
+    throw new UserAlreadyExistsException(email);
+
+// UserService.cs — кидає виняток при невірному groupId
+var group = await _context.Groups.FindAsync(groupId);
+if (group == null)
+    throw new GroupNotFoundException(groupId);
+```
